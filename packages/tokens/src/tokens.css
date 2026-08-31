@@ -1,0 +1,57 @@
+/* Zunia design tokens (CSS). Keep in sync with packages/tokens/src/index.ts */
+:root {
+  --zunia-ink: #10214f;
+  --zunia-paper: #f4f5f7;
+  --zunia-cobalt: #2050c4;
+  --zunia-cobaltBright: #3b6bff;
+  --zunia-cobaltSoft: #6fa8ff;
+  --zunia-black: #101012;
+  --zunia-slate: #4a5468;
+  --zunia-grey: #6e7280;
+  --zunia-muted: #a8bade;
+  --zunia-hairline: #c7d2ea;
+  --zunia-wash: #e4e9f4;
+  --zunia-white: #ffffff;
+  --zunia-danger: #c23b3b;
+  --zunia-success: #2f8f5b;
+  --zunia-warning: #c48a1a;
+
+  --zunia-space-0: 0;
+  --zunia-space-1: 4px;
+  --zunia-space-2: 8px;
+  --zunia-space-3: 12px;
+  --zunia-space-4: 16px;
+  --zunia-space-5: 20px;
+  --zunia-space-6: 24px;
+  --zunia-space-8: 32px;
+  --zunia-space-10: 40px;
+  --zunia-space-12: 48px;
+  --zunia-space-16: 64px;
+
+  --zunia-radius-none: 0;
+  --zunia-radius-sm: 6px;
+  --zunia-radius-md: 10px;
+  --zunia-radius-lg: 14px;
+  --zunia-radius-xl: 20px;
+  --zunia-radius-full: 9999px;
+
+  --zunia-font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --zunia-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --zunia-bg: var(--zunia-paper);
+  --zunia-bg-elevated: var(--zunia-white);
+  --zunia-fg: var(--zunia-black);
+  --zunia-fg-muted: var(--zunia-slate);
+  --zunia-accent: var(--zunia-cobalt);
+  --zunia-border: var(--zunia-hairline);
+}
+
+[data-theme="dark"],
+.zunia-dark {
+  --zunia-bg: var(--zunia-ink);
+  --zunia-bg-elevated: #15275c;
+  --zunia-fg: var(--zunia-paper);
+  --zunia-fg-muted: var(--zunia-muted);
+  --zunia-accent: var(--zunia-cobaltSoft);
+  --zunia-border: rgba(244, 245, 247, 0.12);
+}

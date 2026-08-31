@@ -1,0 +1,172 @@
+@import "../../tokens/src/tokens.css";
+
+.zunia-root {
+  font-family: var(--zunia-font-sans);
+  color: var(--zunia-fg);
+  background: var(--zunia-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.zunia-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zunia-space-2);
+  border: 0;
+  cursor: pointer;
+  font-family: var(--zunia-font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  border-radius: var(--zunia-radius-full);
+  padding: 12px 20px;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.zunia-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.zunia-btn--primary {
+  background: var(--zunia-cobalt);
+  color: var(--zunia-white);
+}
+
+.zunia-btn--primary:hover:not(:disabled) {
+  background: var(--zunia-cobaltBright);
+}
+
+.zunia-btn--secondary {
+  background: transparent;
+  color: var(--zunia-fg);
+  box-shadow: inset 0 0 0 1px var(--zunia-border);
+}
+
+.zunia-btn--ghost {
+  background: transparent;
+  color: var(--zunia-accent);
+  padding-inline: 12px;
+}
+
+.zunia-btn--sm {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.zunia-btn--lg {
+  padding: 14px 24px;
+  font-size: 15px;
+}
+
+.zunia-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--zunia-font-sans);
+  font-size: 15px;
+  color: var(--zunia-fg);
+  background: var(--zunia-bg-elevated);
+  border: 1px solid var(--zunia-border);
+  border-radius: var(--zunia-radius-md);
+  padding: 12px 14px;
+  outline: none;
+}
+
+.zunia-input:focus {
+  border-color: var(--zunia-cobalt);
+  box-shadow: 0 0 0 3px rgba(32, 80, 196, 0.18);
+}
+
+.zunia-input::placeholder {
+  color: var(--zunia-fg-muted);
+}
+
+.zunia-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zunia-space-2);
+}
+
+.zunia-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--zunia-fg-muted);
+}
+
+.zunia-address {
+  font-family: var(--zunia-font-mono);
+  font-size: 12px;
+  color: var(--zunia-fg-muted);
+  word-break: break-all;
+}
+
+.zunia-amount {
+  font-family: var(--zunia-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--zunia-fg);
+  letter-spacing: -0.01em;
+}
+
+.zunia-amount__denom {
+  margin-left: 6px;
+  color: var(--zunia-fg-muted);
+  font-weight: 400;
+}
+
+.zunia-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--zunia-fg);
+  background: var(--zunia-bg-elevated);
+  border: 1px solid var(--zunia-border);
+  border-radius: var(--zunia-radius-full);
+  padding: 6px 10px 6px 6px;
+}
+
+.zunia-badge__icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--zunia-wash);
+}
+
+.zunia-surface {
+  background: var(--zunia-bg-elevated);
+  border: 1px solid var(--zunia-border);
+  border-radius: var(--zunia-radius-lg);
+  padding: var(--zunia-space-4);
+}
+
+.zunia-text--title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  color: var(--zunia-fg);
+}
+
+.zunia-text--body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--zunia-fg-muted);
+}
+
+.zunia-text--label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--zunia-fg);
+}
+
+.zunia-mark {
+  display: block;
+  border-radius: 8px;
+}
