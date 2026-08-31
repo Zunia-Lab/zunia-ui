@@ -7,22 +7,22 @@
 
 ## Why this repo
 
-One visual language across every surface. Brand tokens live once; React and React Native components share the same names and behavior so product UIs stay aligned.
+One visual language across every surface. Brand tokens live once; React packages cover web and the extension. The mobile app is **Flutter** and mirrors the same tokens in Dart (`lib/theme/zunia_theme.dart`).
 
 ```
 packages/
   tokens/      @zunialab/tokens       colors, type, space, themes (JS + CSS)
   ui/          @zunialab/ui           React — website, dashboard, extension
-  ui-native/   @zunialab/ui-native    React Native — Expo mobile
+  ui-native/   @zunialab/ui-native    Optional React Native parity kit (legacy)
 ```
 
 ## Packages
 
 | Package | Used by |
 |---------|---------|
-| `@zunialab/tokens` | All apps |
+| `@zunialab/tokens` | Web apps + extension |
 | `@zunialab/ui` | `zunia-website`, `zunia-dashboard`, `zunia-extension` |
-| `@zunialab/ui-native` | `zunia-mobile` |
+| Flutter theme in [zunia-mobile](https://github.com/Zunia-Lab/zunia-mobile) | iOS + Android |
 
 ### Shared components (same API on web + native)
 
