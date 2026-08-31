@@ -11,9 +11,10 @@ One visual language across every surface. Brand tokens live once; React packages
 
 ```
 packages/
-  tokens/      @zunialab/tokens       colors, type, space, themes (JS + CSS)
-  ui/          @zunialab/ui           React — website, dashboard, extension
-  ui-native/   @zunialab/ui-native    Optional React Native parity kit (legacy)
+  tokens/           @zunialab/tokens       colors, type, space, themes (JS + CSS)
+  tokens-flutter/   zunia_tokens           Flutter Dart tokens (use with zunia-mobile)
+  ui/               @zunialab/ui           React — website, dashboard, extension
+  ui-native/        @zunialab/ui-native    Optional React Native kit (not used by Flutter mobile)
 ```
 
 ## Packages
@@ -22,7 +23,8 @@ packages/
 |---------|---------|
 | `@zunialab/tokens` | Web apps + extension |
 | `@zunialab/ui` | `zunia-website`, `zunia-dashboard`, `zunia-extension` |
-| Flutter theme in [zunia-mobile](https://github.com/Zunia-Lab/zunia-mobile) | iOS + Android |
+| `zunia_tokens` (`packages/tokens-flutter`) | `zunia-mobile` (Flutter) |
+| `@zunialab/ui-native` | Optional RN only — **not** the mobile wallet stack |
 
 ### Shared components (same API on web + native)
 
