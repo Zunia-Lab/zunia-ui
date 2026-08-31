@@ -1,6 +1,7 @@
+// GENERATED — do not edit. Run: pnpm gen:flutter (from @zunialab/tokens)
 import 'package:flutter/painting.dart';
 
-/// Brand colors — keep in sync with packages/tokens/src/index.ts
+/// Brand colors — generated from @zunialab/tokens
 abstract final class ZuniaColors {
   static const Color ink = Color(0xFF10214F);
   static const Color paper = Color(0xFFF4F5F7);

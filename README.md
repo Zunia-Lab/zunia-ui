@@ -7,7 +7,7 @@
 
 ## Why this repo
 
-One visual language across every surface. Brand tokens live once; React packages cover web and the extension. The mobile app is **Flutter** and mirrors the same tokens in Dart (`lib/theme/zunia_theme.dart`).
+One visual language across every surface. Brand tokens live once in `@zunialab/tokens`. Generate Flutter Dart with `pnpm gen:flutter`. React packages cover web/extension. **Mobile is Flutter** (`zunia_tokens`); `@zunialab/ui-native` is optional RN only.
 
 ```
 packages/

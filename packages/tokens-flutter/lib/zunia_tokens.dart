@@ -1,8 +1,9 @@
-/// Design tokens mirrored from `@zunialab/tokens` for the Flutter mobile app.
+/// Design tokens for Flutter — generated from `@zunialab/tokens`.
 ///
-/// `packages/ui-native` targets React Native and is **not** used by `zunia-mobile`.
-/// Prefer this package (or codegen from tokens) for Flutter UI.
+/// `@zunialab/ui-native` is React Native only. Flutter mobile uses this package.
 library;
 
 export 'src/colors.dart';
 export 'src/space.dart';
+export 'src/radii.dart';
+export 'src/themes.dart';

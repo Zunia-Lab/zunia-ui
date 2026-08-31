@@ -1,4 +1,6 @@
-/// Spacing scale in logical pixels — mirrors `@zunialab/tokens` space.
+// GENERATED — do not edit. Run: pnpm gen:flutter (from @zunialab/tokens)
+
+/// Spacing scale in logical pixels — generated from @zunialab/tokens
 abstract final class ZuniaSpace {
   static const double s0 = 0;
   static const double s1 = 4;

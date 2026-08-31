@@ -1,7 +1,7 @@
 {
   "name": "@zunialab/ui-native",
   "version": "0.1.0",
-  "description": "Zunia React Native UI — same design language as @zunialab/ui",
+  "description": "OPTIONAL React Native UI — not used by zunia-mobile (Flutter). Prefer packages/tokens-flutter.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
