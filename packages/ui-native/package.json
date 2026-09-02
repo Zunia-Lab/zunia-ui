@@ -28,8 +28,8 @@
     "@zunialab/tokens": "workspace:^"
   },
   "devDependencies": {
-    "@types/react": "^18.3.0",
-    "react": "18.3.1",
+    "@types/react": "^19.2.18",
+    "react": "19.2.8",
     "react-native": "0.76.3",
     "tsup": "^8.3.0",
     "typescript": "^5.7.0"
