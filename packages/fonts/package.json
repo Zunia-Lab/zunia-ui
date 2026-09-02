@@ -1,0 +1,27 @@
+{
+  "name": "@zunialab/fonts",
+  "version": "0.1.0",
+  "description": "Self-hosted Space Grotesk + JetBrains Mono for Zunia (no CDN).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zunia-Lab/zunia-ui.git"
+  },
+  "homepage": "https://github.com/Zunia-Lab/zunia-ui#readme",
+  "bugs": {
+    "url": "https://github.com/Zunia-Lab/zunia-ui/issues"
+  },
+  "type": "module",
+  "exports": {
+    "./css": "./fonts.css",
+    "./fonts.css": "./fonts.css",
+    "./files/*": "./files/*"
+  },
+  "files": [
+    "files",
+    "fonts.css"
+  ],
+  "license": "OFL-1.1",
+  "publishConfig": {
+    "access": "public"
+  }
+}

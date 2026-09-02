@@ -1,0 +1,35 @@
+name: zunia_ui_gallery
+description: State matrix gallery for zunia_ui
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  zunia_ui:
+    path: ../
+  zunia_tokens:
+    path: ../../tokens-flutter
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: SpaceGrotesk
+      fonts:
+        - asset: ../../../fonts/files/SpaceGrotesk-Light.ttf
+          weight: 300
+        - asset: ../../../fonts/files/SpaceGrotesk-Regular.ttf
+          weight: 400
+        - asset: ../../../fonts/files/SpaceGrotesk-Medium.ttf
+          weight: 500
+        - asset: ../../../fonts/files/SpaceGrotesk-Bold.ttf
+          weight: 700
+    - family: JetBrainsMono
+      fonts:
+        - asset: ../../../fonts/files/JetBrainsMono-Regular.ttf
+          weight: 400
+        - asset: ../../../fonts/files/JetBrainsMono-Medium.ttf
+          weight: 500

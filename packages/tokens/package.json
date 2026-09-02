@@ -2,6 +2,14 @@
   "name": "@zunialab/tokens",
   "version": "0.1.0",
   "description": "Zunia design tokens — colors, type, space. Shared by web, extension, and mobile.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zunia-Lab/zunia-ui.git"
+  },
+  "homepage": "https://github.com/Zunia-Lab/zunia-ui#readme",
+  "bugs": {
+    "url": "https://github.com/Zunia-Lab/zunia-ui/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -13,17 +21,21 @@
     },
     "./css": "./dist/tokens.css",
     "./tokens.css": "./dist/tokens.css",
+    "./theme.css": "./dist/theme.css",
     "./native": {
       "types": "./dist/native.d.ts",
       "import": "./dist/native.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts src/native.ts --format esm --dts --clean && cp src/tokens.css dist/tokens.css",
+    "build": "tsup src/index.ts src/native.ts --format esm --dts --clean && cp src/tokens.css dist/tokens.css && cp src/theme.css dist/theme.css",
     "dev": "tsup src/index.ts src/native.ts --format esm --dts --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "gen:flutter": "tsx scripts/gen-flutter.ts"
+    "gen:flutter": "tsx scripts/gen-flutter.ts",
+    "check:contrast": "tsx scripts/check-contrast.ts"
   },
   "devDependencies": {
     "tsup": "^8.3.0",

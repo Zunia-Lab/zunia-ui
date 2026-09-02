@@ -1,57 +1,320 @@
 /* Zunia design tokens (CSS). Keep in sync with packages/tokens/src/index.ts */
+
 :root {
-  --zunia-ink: #10214f;
-  --zunia-paper: #f4f5f7;
-  --zunia-cobalt: #2050c4;
-  --zunia-cobaltBright: #3b6bff;
-  --zunia-cobaltSoft: #6fa8ff;
-  --zunia-black: #101012;
-  --zunia-slate: #4a5468;
-  --zunia-grey: #6e7280;
-  --zunia-muted: #a8bade;
-  --zunia-hairline: #c7d2ea;
-  --zunia-wash: #e4e9f4;
-  --zunia-white: #ffffff;
-  --zunia-danger: #c23b3b;
-  --zunia-success: #2f8f5b;
-  --zunia-warning: #c48a1a;
+  /* Neutral ramp */
+  --z-n0: #050506;
+  --z-n50: #0a0a0c;
+  --z-n100: #121214;
+  --z-n150: #1a1a1e;
+  --z-n200: #242428;
+  --z-n250: #2e2e34;
+  --z-n300: #3a3a42;
+  --z-n400: #52525c;
+  --z-n500: #6e6e78;
+  --z-n600: #8a8a94;
+  --z-n700: #a8a8b0;
+  --z-n800: #c6c6cc;
+  --z-n850: #d6d6da;
+  --z-n900: #e8e8ea;
+  --z-n950: #f2f2f3;
+  --z-n1000: #ffffff;
 
-  --zunia-space-0: 0;
-  --zunia-space-1: 4px;
-  --zunia-space-2: 8px;
-  --zunia-space-3: 12px;
-  --zunia-space-4: 16px;
-  --zunia-space-5: 20px;
-  --zunia-space-6: 24px;
-  --zunia-space-8: 32px;
-  --zunia-space-10: 40px;
-  --zunia-space-12: 48px;
-  --zunia-space-16: 64px;
+  /* Status defaults = light (dark theme overrides). Avoids neon-on-paper flash. */
+  --z-danger: #c4402f;
+  --z-danger-fg: #8a3524;
+  --z-danger-line: rgba(196, 64, 47, 0.4);
+  --z-danger-fill: rgba(196, 64, 47, 0.08);
+  --z-success: #17845e;
+  --z-success-fg: #0d5b40;
+  --z-success-line: rgba(23, 132, 94, 0.4);
+  --z-success-fill: rgba(23, 132, 94, 0.08);
+  --z-warning: #b8503c;
+  --z-warning-fg: #8a3524;
+  --z-warning-line: rgba(184, 80, 60, 0.4);
+  --z-warning-fill: rgba(184, 80, 60, 0.08);
+  --z-info: #1b49b8;
+  --z-info-fg: #2b3757;
+  --z-info-line: rgba(27, 73, 184, 0.4);
+  --z-info-fill: rgba(27, 73, 184, 0.08);
 
-  --zunia-radius-none: 0;
-  --zunia-radius-sm: 6px;
-  --zunia-radius-md: 10px;
-  --zunia-radius-lg: 14px;
-  --zunia-radius-xl: 20px;
-  --zunia-radius-full: 9999px;
+  /* Space */
+  --z-space-0: 0;
+  --z-space-1: 4px;
+  --z-space-2: 8px;
+  --z-space-3: 12px;
+  --z-space-4: 16px;
+  --z-space-5: 20px;
+  --z-space-6: 24px;
+  --z-space-8: 32px;
+  --z-space-10: 40px;
+  --z-space-12: 48px;
+  --z-space-16: 64px;
 
-  --zunia-font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
-  --zunia-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Radii */
+  --z-radius-none: 0;
+  --z-radius-xs: 6px;
+  --z-radius-sm: 9px;
+  --z-radius-md: 11px;
+  --z-radius-lg: 14px;
+  --z-radius-xl: 18px;
+  --z-radius-2xl: 20px;
+  --z-radius-sheet: 30px;
+  --z-radius-full: 9999px;
+  --z-radius-control: 11px;
 
-  --zunia-bg: var(--zunia-paper);
-  --zunia-bg-elevated: var(--zunia-white);
-  --zunia-fg: var(--zunia-black);
-  --zunia-fg-muted: var(--zunia-slate);
-  --zunia-accent: var(--zunia-cobalt);
-  --zunia-border: var(--zunia-hairline);
+  /* Control heights */
+  --z-h-desktop: 30px;
+  --z-h-sm: 34px;
+  --z-h-md: 36px;
+  --z-h-popup: 42px;
+  --z-h-lg: 44px;
+  --z-h-mobile-cta: 46px;
+
+  /* Type */
+  --z-font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --z-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Density type scale. Compact defaults stay for the extension popup.
+     Desktop surfaces override these on `.zunia-root`. */
+  --z-type-micro: 9.5px;
+  --z-type-meta: 11px;
+  --z-type-row: 13px;
+  --z-type-body: 13.5px;
+  --z-type-heading: 15px;
+  --z-type-stat: 20px;
+  --z-type-hero: 32px;
+  --z-card-pad: 16px;
+  --z-nav-w: 200px;
+  --z-nav-w-lg: 220px;
+  --z-live-w: 260px;
+  --z-live-w-xl: 280px;
+
+  /* Motion */
+  --z-duration-fast: 120ms;
+  --z-duration-base: 180ms;
+  --z-duration-slow: 240ms;
+  --z-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Focus — quiet 1px edge, no offset halo */
+  --z-focus-width: 1px;
+  --z-focus-offset: 0px;
+
+  /* Brand (chevrons kit) */
+  --z-brand-ink: #111111;
+  --z-brand-paper: #f1f0ee;
+  --z-brand-red: #ff1b0c;
+  --z-brand-vermilion: #ff4e12;
+  --z-brand-amber: #ff8a17;
+  --z-brand-gold: #ffbe14;
+  --z-brand-yellow: #ffe05c;
+  --z-brand-void: #0b0a09;
+  --z-brand-panel: #161311;
+  /* Legacy aliases → warm accent */
+  --z-brand-cobalt: var(--z-brand-red);
+  --z-brand-cobalt-bright: var(--z-brand-vermilion);
+  --z-brand-cobalt-soft: var(--z-brand-amber);
+  --z-brand-cobalt-violet: var(--z-brand-gold);
+  --z-cobalt-rgb: 255, 27, 12;
+  --z-cobalt-bright-rgb: 255, 78, 18;
+  --z-void-rgb: 11, 10, 9;
+  /* Ambient page bloom. Scale with --z-bloom per theme. */
+  --z-bloom-gradient: radial-gradient(
+    circle,
+    rgba(255, 27, 12, 0) 40%,
+    rgba(255, 27, 12, 0.28) 52%,
+    rgba(255, 106, 16, 0.5) 60%,
+    rgba(212, 40, 0, 0.2) 70%,
+    rgba(11, 10, 9, 0) 84%
+  );
+
+  /* Default theme = light (overridden by data-theme / .zunia-dark) */
+  --z-bg: #f1f0ee;
+  --z-surface: var(--z-n1000);
+  --z-surface-raised: #faf9f7;
+  --z-surface-sunken: #e2e0dc;
+  --z-line: rgba(17, 17, 17, 0.12);
+  --z-line-strong: rgba(17, 17, 17, 0.2);
+  --z-fg: #111111;
+  --z-fg-strong: #1a1a1a;
+  --z-fg-muted: #444444;
+  --z-fg-dim: #666666;
+  --z-fg-faint: #9a9a9a;
+  --z-accent: #ff1b0c;
+  --z-accent-fg: var(--z-n1000);
+  --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
+  --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
+  /* Solid paper cards */
+  --z-surface-gradient: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  --z-surface-raised-gradient: linear-gradient(180deg, #ffffff 0%, #f1f0ee 100%);
+  --z-hero-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.14),
+    rgba(255, 196, 20, 0.06)
+  );
+  --z-hero-soft-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.08),
+    rgba(255, 138, 23, 0.04)
+  );
+  --z-bloom: 0.25;
+  --z-overlay: rgba(17, 17, 17, 0.4);
+  --z-shadow: rgba(17, 17, 17, 0.1);
+  --z-card-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.06);
+  --z-glass: rgba(17, 17, 17, 0.05);
+  --z-glass-2: rgba(17, 17, 17, 0.09);
+  --z-state-hover: rgba(255, 27, 12, 0.08);
+  --z-state-press: rgba(255, 27, 12, 0.14);
+  --z-state-selected: rgba(255, 27, 12, 0.12);
+  --z-focus-ring: rgba(255, 27, 12, 0.4);
+  --z-focus-ring-inner: transparent;
+  --z-disabled-opacity: 0.45;
+
+  /* Legacy aliases (prefer --z-*) */
+  --zunia-bg: var(--z-bg);
+  --zunia-bg-elevated: var(--z-surface);
+  --zunia-fg: var(--z-fg);
+  --zunia-fg-muted: var(--z-fg-muted);
+  --zunia-accent: var(--z-accent);
+  --zunia-border: var(--z-line);
+  --zunia-font-sans: var(--z-font-sans);
+  --zunia-font-mono: var(--z-font-mono);
+  --zunia-white: var(--z-n1000);
+  --zunia-black: var(--z-n0);
+  --zunia-paper: #f1f0ee;
+  --zunia-ink: #111111;
+  --zunia-danger: var(--z-danger);
+  --zunia-success: var(--z-success);
+  --zunia-warning: var(--z-warning);
 }
 
 [data-theme="dark"],
 .zunia-dark {
-  --zunia-bg: var(--zunia-ink);
-  --zunia-bg-elevated: #15275c;
-  --zunia-fg: var(--zunia-paper);
-  --zunia-fg-muted: var(--zunia-muted);
-  --zunia-accent: var(--zunia-cobaltSoft);
-  --zunia-border: rgba(244, 245, 247, 0.12);
+  --z-bg: #0b0a09;
+  --z-surface: #161311;
+  --z-surface-raised: #1c1814;
+  --z-surface-sunken: #0f0d0b;
+  --z-line: rgba(241, 240, 238, 0.14);
+  --z-line-strong: rgba(241, 240, 238, 0.22);
+  --z-fg: #f1f0ee;
+  --z-fg-strong: #e8e4de;
+  --z-fg-muted: #c9c6c1;
+  --z-fg-dim: #8a8a8a;
+  --z-fg-faint: #666666;
+  --z-accent: #ff1b0c;
+  --z-accent-fg: #ffffff;
+  --z-overlay: rgba(11, 10, 9, 0.72);
+  --z-shadow: rgba(0, 0, 0, 0.55);
+  --z-glass: rgba(241, 240, 238, 0.045);
+  --z-glass-2: rgba(241, 240, 238, 0.1);
+  --z-state-hover: rgba(255, 78, 18, 0.12);
+  --z-state-press: rgba(255, 78, 18, 0.2);
+  --z-state-selected: rgba(255, 27, 12, 0.28);
+  --z-focus-ring: rgba(255, 138, 23, 0.45);
+  --z-focus-ring-inner: transparent;
+  --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
+  --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
+  --z-surface-gradient: linear-gradient(
+    180deg,
+    rgba(241, 240, 238, 0.08),
+    rgba(241, 240, 238, 0.028)
+  );
+  --z-surface-raised-gradient: linear-gradient(
+    180deg,
+    rgba(241, 240, 238, 0.1),
+    rgba(241, 240, 238, 0.035)
+  );
+  --z-hero-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.28),
+    rgba(255, 196, 20, 0.1)
+  );
+  --z-hero-soft-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.2),
+    rgba(255, 138, 23, 0.08)
+  );
+  --z-bloom: 1;
+  --z-danger: #e85a4a;
+  --z-danger-fg: #f5c4bc;
+  --z-danger-line: rgba(232, 90, 74, 0.45);
+  --z-danger-fill: rgba(232, 90, 74, 0.12);
+  --z-success: #4ed8a0;
+  --z-success-fg: #b4efd6;
+  --z-success-line: rgba(78, 216, 160, 0.45);
+  --z-success-fill: rgba(78, 216, 160, 0.12);
+  --z-warning: #e5a06b;
+  --z-warning-fg: #f0d4b6;
+  --z-warning-line: rgba(229, 160, 107, 0.45);
+  --z-warning-fill: rgba(229, 160, 107, 0.1);
+  --z-info: #ff8a17;
+  --z-info-fg: #ffe0b8;
+  --z-info-line: rgba(255, 138, 23, 0.45);
+  --z-info-fill: rgba(255, 138, 23, 0.14);
+  --z-card-shadow: none;
+}
+
+[data-theme="light"],
+.zunia-light {
+  --z-bg: #f1f0ee;
+  --z-surface: var(--z-n1000);
+  --z-surface-raised: #faf9f7;
+  --z-surface-sunken: #e2e0dc;
+  --z-line: rgba(17, 17, 17, 0.12);
+  --z-line-strong: rgba(17, 17, 17, 0.2);
+  --z-fg: #111111;
+  --z-fg-strong: #1a1a1a;
+  --z-fg-muted: #444444;
+  --z-fg-dim: #666666;
+  --z-fg-faint: #9a9a9a;
+  --z-accent: #ff1b0c;
+  --z-accent-fg: #ffffff;
+  --z-overlay: rgba(17, 17, 17, 0.4);
+  --z-shadow: rgba(17, 17, 17, 0.1);
+  --z-card-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.06);
+  --z-glass: rgba(17, 17, 17, 0.05);
+  --z-glass-2: rgba(17, 17, 17, 0.09);
+  --z-state-hover: rgba(255, 27, 12, 0.08);
+  --z-state-press: rgba(255, 27, 12, 0.14);
+  --z-state-selected: rgba(255, 27, 12, 0.12);
+  --z-focus-ring: rgba(255, 27, 12, 0.4);
+  --z-focus-ring-inner: transparent;
+  --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
+  --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
+  --z-surface-gradient: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
+  --z-surface-raised-gradient: linear-gradient(180deg, #ffffff 0%, #f1f0ee 100%);
+  --z-hero-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.14),
+    rgba(255, 196, 20, 0.06)
+  );
+  --z-hero-soft-gradient: linear-gradient(
+    150deg,
+    rgba(255, 27, 12, 0.08),
+    rgba(255, 138, 23, 0.04)
+  );
+  --z-bloom: 0.25;
+  --z-danger: #c4402f;
+  --z-danger-fg: #8a3524;
+  --z-danger-line: rgba(196, 64, 47, 0.4);
+  --z-danger-fill: rgba(196, 64, 47, 0.08);
+  --z-success: #17845e;
+  --z-success-fg: #0d5b40;
+  --z-success-line: rgba(23, 132, 94, 0.4);
+  --z-success-fill: rgba(23, 132, 94, 0.08);
+  --z-warning: #b86a3c;
+  --z-warning-fg: #8a4a24;
+  --z-warning-line: rgba(184, 106, 60, 0.4);
+  --z-warning-fill: rgba(184, 106, 60, 0.08);
+  --z-info: #c45a0a;
+  --z-info-fg: #5a3a18;
+  --z-info-line: rgba(196, 90, 10, 0.4);
+  --z-info-fill: rgba(196, 90, 10, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --z-duration-fast: 0ms;
+    --z-duration-base: 0ms;
+    --z-duration-slow: 0ms;
+  }
 }

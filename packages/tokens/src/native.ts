@@ -1,6 +1,15 @@
-import { colors, fonts, fontWeights, radii, space, themes } from "./index";
+import {
+  colors,
+  fonts,
+  fontWeights,
+  radii,
+  space,
+  themes,
+  controlHeights,
+  motion,
+} from "./index";
 
-/** Numeric / RN-friendly token map for React Native StyleSheet. */
+/** Numeric / RN-friendly token map (legacy RN package; Flutter uses zunia_tokens). */
 export const nativeColors = { ...colors };
 
 export const nativeSpace = {
@@ -19,10 +28,13 @@ export const nativeSpace = {
 
 export const nativeRadii = {
   none: 0,
-  sm: 6,
-  md: 10,
+  xs: 6,
+  sm: 9,
+  md: 11,
   lg: 14,
-  xl: 20,
+  xl: 18,
+  "2xl": 20,
+  sheet: 30,
   full: 9999,
 } as const;
 
@@ -33,22 +45,8 @@ export const nativeFonts = {
 } as const;
 
 export const nativeThemes = {
-  light: {
-    bg: colors.paper,
-    bgElevated: colors.white,
-    fg: colors.black,
-    fgMuted: colors.slate,
-    accent: colors.cobalt,
-    border: colors.hairline,
-  },
-  dark: {
-    bg: colors.ink,
-    bgElevated: "#15275C",
-    fg: colors.paper,
-    fgMuted: colors.muted,
-    accent: colors.cobaltSoft,
-    border: "rgba(244, 245, 247, 0.12)",
-  },
+  light: themes.light,
+  dark: themes.dark,
 } as const;
 
 export const nativeTokens = {
@@ -57,9 +55,13 @@ export const nativeTokens = {
   radii: nativeRadii,
   fonts: nativeFonts,
   fontWeights,
+  controlHeights,
+  motion,
   themes: nativeThemes,
   webFonts: fonts,
   webThemes: themes,
+  webSpace: space,
+  webRadii: radii,
 } as const;
 
 export default nativeTokens;

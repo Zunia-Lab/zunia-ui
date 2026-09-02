@@ -1,0 +1,82 @@
+/**
+ * Tailwind v4 theme bridge for Zunia tokens.
+ * Import after `@import "tailwindcss"` in app CSS, or via `@import "@zunialab/tokens/theme.css"`.
+ */
+@import "./tokens.css";
+
+@theme {
+  --color-bg: var(--z-bg);
+  --color-surface: var(--z-surface);
+  --color-surface-raised: var(--z-surface-raised);
+  --color-surface-sunken: var(--z-surface-sunken);
+  --color-line: var(--z-line);
+  --color-line-strong: var(--z-line-strong);
+  --color-fg: var(--z-fg);
+  --color-fg-strong: var(--z-fg-strong);
+  --color-fg-muted: var(--z-fg-muted);
+  --color-fg-dim: var(--z-fg-dim);
+  --color-fg-faint: var(--z-fg-faint);
+  --color-accent: var(--z-accent);
+  --color-accent-fg: var(--z-accent-fg);
+  --color-overlay: var(--z-overlay);
+  --color-glass: var(--z-glass);
+  --color-glass-2: var(--z-glass-2);
+  --color-danger: var(--z-danger);
+  --color-danger-fg: var(--z-danger-fg);
+  --color-success: var(--z-success);
+  --color-success-fg: var(--z-success-fg);
+  --color-warning: var(--z-warning);
+  --color-warning-fg: var(--z-warning-fg);
+  --color-info: var(--z-info);
+  --color-info-fg: var(--z-info-fg);
+
+  --background-image-accent: var(--z-accent-gradient);
+  --background-image-surface: var(--z-surface-gradient);
+  --background-image-surface-raised: var(--z-surface-raised-gradient);
+  --background-image-hero: var(--z-hero-gradient);
+  --background-image-hero-soft: var(--z-hero-soft-gradient);
+  --shadow-accent: var(--z-accent-glow);
+
+  --color-n-0: var(--z-n0);
+  --color-n-50: var(--z-n50);
+  --color-n-100: var(--z-n100);
+  --color-n-200: var(--z-n200);
+  --color-n-300: var(--z-n300);
+  --color-n-400: var(--z-n400);
+  --color-n-500: var(--z-n500);
+  --color-n-600: var(--z-n600);
+  --color-n-700: var(--z-n700);
+  --color-n-800: var(--z-n800);
+  --color-n-900: var(--z-n900);
+  --color-n-950: var(--z-n950);
+  --color-n-1000: var(--z-n1000);
+
+  --font-sans: var(--z-font-sans);
+  --font-mono: var(--z-font-mono);
+
+  --radius-xs: var(--z-radius-xs);
+  --radius-sm: var(--z-radius-sm);
+  --radius-md: var(--z-radius-md);
+  --radius-lg: var(--z-radius-lg);
+  --radius-xl: var(--z-radius-xl);
+  --radius-2xl: var(--z-radius-2xl);
+  --radius-sheet: var(--z-radius-sheet);
+  --radius-control: var(--z-radius-control);
+  --radius-full: var(--z-radius-full);
+
+  --spacing-z-1: var(--z-space-1);
+  --spacing-z-2: var(--z-space-2);
+  --spacing-z-3: var(--z-space-3);
+  --spacing-z-4: var(--z-space-4);
+  --spacing-z-5: var(--z-space-5);
+  --spacing-z-6: var(--z-space-6);
+  --spacing-z-8: var(--z-space-8);
+
+  --ease-zunia: var(--z-ease);
+  --animate-duration-fast: var(--z-duration-fast);
+  --animate-duration-base: var(--z-duration-base);
+  --animate-duration-slow: var(--z-duration-slow);
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));

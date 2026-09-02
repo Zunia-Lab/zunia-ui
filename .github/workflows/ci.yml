@@ -21,5 +21,22 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm check:contrast
+      - run: pnpm check:parity
       - run: pnpm typecheck
       - run: pnpm build
+      - run: pnpm gen:flutter
+
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Analyze tokens-flutter
+        working-directory: packages/tokens-flutter
+        run: flutter pub get && dart analyze
+      - name: Analyze ui-flutter
+        working-directory: packages/ui-flutter
+        run: flutter pub get && flutter analyze
