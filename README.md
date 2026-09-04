@@ -1,6 +1,10 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Zunia-Lab/zunia-brand/main/png/icons/app/zunia-icon-256.png" alt="Zunia" width="96" />
+</p>
+
 # zunia-ui
 
-Monochrome design system for Zunia (web, extension, Flutter mobile).
+Design system for Zunia (web, extension, Flutter mobile) with the chevron brand accent.
 
 ## Packages
 
@@ -14,7 +18,7 @@ Monochrome design system for Zunia (web, extension, Flutter mobile).
 | `@zunialab/storybook` | State matrix + a11y (`apps/storybook`) |
 | `@zunialab/ui-native` | **Retired** — see [docs/adr/0001-retire-ui-native.md](./docs/adr/0001-retire-ui-native.md) |
 
-Accent is pure inversion (white on dark / black on light). Cobalt is not used in product UI. Danger / success / warning stay desaturated for security signals only.
+Accent uses the chevron brand reds (`#FF1B0C` → `#FFC414`) from @zunialab/tokens. Danger / success / warning stay desaturated for security signals only.
 
 ## Commands
 
