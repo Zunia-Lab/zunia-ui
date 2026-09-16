@@ -5,7 +5,7 @@ import { cn, focusRing } from "../lib/cn";
 
 export function PopupShell({
   children,
-  chromeLabel = "zuniawallet.com",
+  chromeLabel = "zunialab.com",
   className,
   /** Storybook / marketing mock shows a fake URL bar. Real extension popups should hide it. */
   showChrome = true,
