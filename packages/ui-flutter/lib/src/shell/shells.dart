@@ -14,6 +14,8 @@ class ZuniaScreenScaffold extends StatelessWidget {
     this.footer,
     this.gradient = true,
     this.padding,
+    /// When true (default), the footer floats over the content with no bar chrome.
+    this.floatingFooter = true,
   });
 
   final String? title;
@@ -29,9 +31,13 @@ class ZuniaScreenScaffold extends StatelessWidget {
 
   final EdgeInsetsGeometry? padding;
 
+  /// Floating CTA dock (no full-bleed footer strip). Set false for a solid bar.
+  final bool floatingFooter;
+
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
     final content = Column(
       children: [
         if (title != null || onBack != null || trailing != null)
@@ -66,19 +72,38 @@ class ZuniaScreenScaffold extends StatelessWidget {
               : Padding(padding: padding!, child: body),
         ),
         if (footer != null)
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: s.screenMid.withValues(alpha: 0.92),
-              border: Border(top: BorderSide(color: s.line)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: footer!,
-              ),
-            ),
-          ),
+          floatingFooter
+              ? Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    18,
+                    8,
+                    18,
+                    10 + bottomInset,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: double.infinity),
+                    child: footer!,
+                  ),
+                )
+              : DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: s.screenMid.withValues(alpha: 0.92),
+                    border: Border(top: BorderSide(color: s.line)),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      12,
+                      16,
+                      12 + bottomInset,
+                    ),
+                    child: ConstrainedBox(
+                      constraints:
+                          const BoxConstraints(minWidth: double.infinity),
+                      child: footer!,
+                    ),
+                  ),
+                ),
       ],
     );
 
@@ -131,70 +156,80 @@ class ZuniaTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
-    return Container(
-      margin: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: s.tabBarBg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: s.line),
-        boxShadow: [
-          BoxShadow(
-            color: s.shadow.withValues(alpha: 0.45),
-            blurRadius: 30,
-            offset: const Offset(0, 14),
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+    return Padding(
+      // Float above the home indicator; no full-bleed scaffold bar behind it.
+      padding: EdgeInsets.fromLTRB(14, 0, 14, 10 + bottomInset),
+      child: Material(
+        color: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: s.tabBarBg,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: s.line),
+            boxShadow: [
+              BoxShadow(
+                color: s.shadow.withValues(alpha: 0.45),
+                blurRadius: 30,
+                offset: const Offset(0, 14),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: items.map((item) {
-          final active = item.id == value;
-          return Expanded(
-            flex: active ? 5 : 4,
-            child: Material(
-              color: active ? s.accent : Colors.transparent,
-              borderRadius: BorderRadius.circular(999),
-              child: InkWell(
-                onTap: () => onChanged(item.id),
-                borderRadius: BorderRadius.circular(999),
-                hoverColor: active
-                    ? Colors.white.withValues(alpha: 0.1)
-                    : s.stateHover,
-                splashColor: active
-                    ? Colors.white.withValues(alpha: 0.14)
-                    : s.statePress,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (item.icon != null) ...[
-                        Icon(
-                          item.icon,
-                          size: 20,
-                          color: active ? s.accentFg : s.fgDim,
-                        ),
-                        const SizedBox(height: 4),
-                      ],
-                      Text(
-                        item.label.toUpperCase(),
-                        maxLines: 1,
-                        overflow: TextOverflow.clip,
-                        textAlign: TextAlign.center,
-                        style: zuniaMono(
-                          fontSize: 8.5,
-                          letterSpacing: 1.0,
-                          color: active ? s.accentFg : s.fgDim,
-                        ),
+          child: Row(
+            children: items.map((item) {
+              final active = item.id == value;
+              return Expanded(
+                flex: active ? 5 : 4,
+                child: Material(
+                  color: active ? s.accent : Colors.transparent,
+                  borderRadius: BorderRadius.circular(999),
+                  child: InkWell(
+                    onTap: () => onChanged(item.id),
+                    borderRadius: BorderRadius.circular(999),
+                    hoverColor: active
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : s.stateHover,
+                    splashColor: active
+                        ? Colors.white.withValues(alpha: 0.14)
+                        : s.statePress,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 9,
+                        horizontal: 4,
                       ),
-                    ],
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (item.icon != null) ...[
+                            Icon(
+                              item.icon,
+                              size: 20,
+                              color: active ? s.accentFg : s.fgDim,
+                            ),
+                            const SizedBox(height: 4),
+                          ],
+                          Text(
+                            item.label.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: zuniaMono(
+                              fontSize: 8.5,
+                              letterSpacing: 1.0,
+                              color: active ? s.accentFg : s.fgDim,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }

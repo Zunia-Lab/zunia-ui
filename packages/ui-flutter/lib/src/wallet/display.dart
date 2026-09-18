@@ -365,7 +365,10 @@ class ZuniaNetworkChip extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (verified) ...[
-                  Icon(Icons.verified, size: 13, color: const Color(0xFFF2913B)),
+                  // Hardcoded amber #F2913B before; the count beside it
+                  // already used s.info, so the two drifted apart in light
+                  // theme where info is #A44A08.
+                  Icon(Icons.verified, size: 13, color: s.info),
                   const SizedBox(width: 7),
                 ],
                 Text(
@@ -420,7 +423,10 @@ class ZuniaQuickAction extends StatelessWidget {
               boxShadow: primary
                   ? [
                       BoxShadow(
-                        color: const Color(0xFF3B6BFF).withValues(alpha: 0.35),
+                        // Was a hardcoded cobalt #3B6BFF from the old palette,
+                        // so the glow under an accent tile read blue. bloom is
+                        // the token that scales the glow per theme.
+                        color: s.accent.withValues(alpha: 0.35 * s.bloom),
                         blurRadius: 18,
                         offset: const Offset(0, 8),
                       ),
@@ -443,6 +449,101 @@ class ZuniaQuickAction extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Circular token or chain logo with a ticker fallback (React `TokenLogo`).
+///
+/// The fallback is not cosmetic: registry icons are remote, so a cold start or
+/// an offline wallet would otherwise show an empty circle where the asset's
+/// identity belongs.
+class ZuniaTokenLogo extends StatelessWidget {
+  const ZuniaTokenLogo({
+    super.key,
+    required this.symbol,
+    this.iconUrl,
+    this.size = 32,
+    this.verified = false,
+    this.selected = false,
+  });
+
+  /// Ticker used both as the fallback glyph and as the accessible name.
+  final String symbol;
+  final String? iconUrl;
+  final double size;
+
+  /// Draws the registry checkmark used for curated assets.
+  final bool verified;
+
+  /// Accent ring for the currently chosen chain or asset.
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = ZuniaSemanticsExt.of(context);
+    final ticker = symbol.trim();
+    // fgMuted over stateHover on surface: 8.62:1 light / 9.52:1 dark.
+    final fallback = Text(
+      ticker.length >= 3
+          ? ticker.substring(0, 3).toUpperCase()
+          : ticker.toUpperCase(),
+      style: zuniaMono(fontSize: size * 0.28, color: s.fgMuted),
+    );
+
+    return Semantics(
+      label: ticker,
+      image: true,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: size,
+              height: size,
+              alignment: Alignment.center,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: s.stateHover,
+                border: selected
+                    ? Border.all(color: s.accent, width: 1.5)
+                    : null,
+              ),
+              child: iconUrl == null
+                  ? fallback
+                  : Image.network(
+                      iconUrl!,
+                      width: size,
+                      height: size,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) => fallback,
+                    ),
+            ),
+            if (verified)
+              Positioned(
+                right: -1,
+                bottom: -1,
+                child: Container(
+                  width: size * 0.44,
+                  height: size * 0.44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: s.info,
+                    // The ring is the surface colour so the badge reads as a
+                    // cut-out rather than a smudge over the logo art.
+                    border: Border.all(color: s.surface, width: 1.5),
+                  ),
+                  // bg on info: 5.18:1 light / 8.38:1 dark.
+                  child: Icon(Icons.check, size: size * 0.26, color: s.bg),
+                ),
+              ),
+          ],
         ),
       ),
     );

@@ -38,7 +38,7 @@ class ZuniaPill extends StatelessWidget {
         fg = s.accentFg;
         bg = s.accent;
       case ZuniaPillTone.danger:
-        border = s.danger.withValues(alpha: 0.45);
+        border = s.dangerLine;
         fg = s.danger;
         bg = null;
     }
@@ -90,17 +90,24 @@ class ZuniaCallout extends StatelessWidget {
     late final Color iconColor;
 
     switch (t) {
+      // The tone tokens (…Line/…Fill/…Fg) are exactly the combinations
+      // @zunialab/tokens measures in check:contrast. The danger and warning
+      // branches used to mix their own alphas instead, and the faded body copy
+      // that produced fell below AA: danger at 85% measured 3.95:1 light /
+      // 3.72:1 dark on its fill, warning at 82% measured 3.65:1 light. The flat
+      // …Fg tokens are gate-certified at 6.77:1 / 10.38:1 and 5.80:1 / 10.45:1
+      // over surfaceRaised.
       case ZuniaCalloutTone.danger:
-        border = s.danger.withValues(alpha: 0.4);
-        fill = s.danger.withValues(alpha: 0.12);
+        border = s.dangerLine;
+        fill = s.dangerFill;
         titleColor = s.danger;
-        bodyColor = s.danger.withValues(alpha: 0.85);
+        bodyColor = s.dangerFg;
         iconColor = s.danger;
       case ZuniaCalloutTone.warning:
-        border = s.warning.withValues(alpha: 0.38);
-        fill = s.warning.withValues(alpha: 0.1);
+        border = s.warningLine;
+        fill = s.warningFill;
         titleColor = s.warning;
-        bodyColor = s.warning.withValues(alpha: 0.82);
+        bodyColor = s.warningFg;
         iconColor = s.warning;
       case ZuniaCalloutTone.info:
         border = s.infoLine;
@@ -114,7 +121,7 @@ class ZuniaCallout extends StatelessWidget {
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
         color: fill,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZuniaRadii.lg),
         border: Border.all(color: border),
       ),
       child: Row(
@@ -305,6 +312,203 @@ class ZuniaSkeleton extends StatelessWidget {
       decoration: BoxDecoration(
         color: s.stateHover,
         borderRadius: BorderRadius.circular(ZuniaRadii.full),
+      ),
+    );
+  }
+}
+
+/// Indeterminate activity indicator (React `Spinner`).
+///
+/// Wraps [CircularProgressIndicator] so call sites stop re-deriving a stroke
+/// width and a colour; an unstyled indicator picks up Material's primary and
+/// its own track, neither of which matched the palette before the theme carried
+/// a `progressIndicatorTheme`.
+class ZuniaSpinner extends StatelessWidget {
+  const ZuniaSpinner({
+    super.key,
+    this.size = 16,
+    this.color,
+    this.semanticsLabel = 'Loading',
+  });
+
+  final double size;
+
+  /// Defaults to the accent. Pass the surrounding foreground when the spinner
+  /// sits on an accent fill, where accent-on-accent would be invisible.
+  final Color? color;
+
+  /// Announced by screen readers; a bare spinner is silent otherwise.
+  final String semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = ZuniaSemanticsExt.of(context);
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CircularProgressIndicator(
+        strokeWidth: size <= 16 ? 2 : 2.5,
+        // accent against surface is 3.88:1 light / 4.77:1 dark — above the 3:1
+        // that WCAG 1.4.11 asks of a non-text indicator.
+        color: color ?? s.accent,
+        semanticsLabel: semanticsLabel,
+      ),
+    );
+  }
+}
+
+/// Label / value / delta stack (React `Stat`).
+class ZuniaStat extends StatelessWidget {
+  const ZuniaStat({
+    super.key,
+    required this.label,
+    required this.value,
+    this.delta,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+  });
+
+  final String label;
+  final String value;
+  final String? delta;
+  final CrossAxisAlignment crossAxisAlignment;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = ZuniaSemanticsExt.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: crossAxisAlignment,
+      children: [
+        // fgStrong on surface: 17.40:1 light / 14.61:1 dark.
+        Text(
+          label.toUpperCase(),
+          style: zuniaMono(
+            fontSize: ZuniaType.labelCaps,
+            letterSpacing: 1.4,
+            color: s.fgStrong,
+          ),
+        ),
+        const SizedBox(height: ZuniaSpace.s1 + 2),
+        // fg on surface: 18.88:1 light / 16.24:1 dark.
+        Text(
+          value,
+          style: zuniaSans(
+            fontSize: ZuniaType.title,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.6,
+            color: s.fg,
+            tabular: const FontFeature.tabularFigures(),
+          ),
+        ),
+        if (delta != null) ...[
+          const SizedBox(height: ZuniaSpace.s1),
+          // fgDim on surface: 5.74:1 light / 5.36:1 dark.
+          Text(
+            delta!,
+            style: zuniaMono(fontSize: ZuniaType.mono, color: s.fgDim),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Tappable list row with leading/trailing slots (React `ListRow`).
+///
+/// The selected state is carried by a fill *and* an accent edge, not by colour
+/// alone, so it survives a monochrome or high-contrast rendering.
+class ZuniaListRow extends StatelessWidget {
+  const ZuniaListRow({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.leading,
+    this.trailing,
+    this.onTap,
+    this.selected = false,
+    this.danger = false,
+  });
+
+  final String title;
+  final String? subtitle;
+  final Widget? leading;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool selected;
+
+  /// Destructive rows (remove wallet, forget dApp) take the danger foreground.
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = ZuniaSemanticsExt.of(context);
+    // fg on surface 18.88:1 light / 16.24:1 dark; on the selected fill it is
+    // 15.61:1 / 12.13:1. danger on surface: 6.00:1 / 5.28:1.
+    final titleColor = danger ? s.danger : s.fg;
+
+    return Material(
+      color: selected ? s.stateSelected : Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        hoverColor: s.stateHover,
+        splashColor: s.statePress,
+        highlightColor: s.statePress,
+        child: Container(
+          decoration: selected
+              ? BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: s.accent, width: 2),
+                  ),
+                )
+              : null,
+          padding: EdgeInsets.fromLTRB(
+            selected ? ZuniaSpace.s4 - 2 : ZuniaSpace.s4,
+            ZuniaSpace.s3,
+            ZuniaSpace.s4,
+            ZuniaSpace.s3,
+          ),
+          child: Row(
+            children: [
+              if (leading != null) ...[
+                leading!,
+                const SizedBox(width: ZuniaSpace.s3),
+              ],
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      style: zuniaSans(
+                        fontSize: ZuniaType.label,
+                        fontWeight: FontWeight.w500,
+                        color: titleColor,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      // fgMuted on surface: 9.74:1 light / 10.86:1 dark.
+                      Text(
+                        subtitle!,
+                        overflow: TextOverflow.ellipsis,
+                        style: zuniaSans(
+                          fontSize: ZuniaType.caption,
+                          color: s.fgMuted,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (trailing != null) ...[
+                const SizedBox(width: ZuniaSpace.s3),
+                trailing!,
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

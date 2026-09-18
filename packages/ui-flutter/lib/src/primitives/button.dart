@@ -49,7 +49,7 @@ class ZuniaButton extends StatelessWidget {
 
     switch (variant) {
       case ZuniaButtonVariant.primary:
-        // The cobalt→violet ramp plus its glow is the product's primary action.
+        // The accent ramp plus its bloom is the product's primary action.
         bg = s.accent;
         fg = s.accentFg;
         side = null;
@@ -66,10 +66,11 @@ class ZuniaButton extends StatelessWidget {
       case ZuniaButtonVariant.danger:
         bg = Colors.transparent;
         fg = s.danger;
-        side = BorderSide(color: s.danger.withValues(alpha: 0.45));
+        side = BorderSide(color: s.dangerLine);
     }
 
     final body = SizedBox(
+      width: size == ZuniaButtonSize.lg ? double.infinity : null,
       height: _height,
       child: Material(
         color: gradient != null
@@ -134,7 +135,11 @@ class ZuniaButton extends StatelessWidget {
           boxShadow: variant == ZuniaButtonVariant.primary && !disabled
               ? [
                   BoxShadow(
-                    color: const Color(0xFF3B6BFF).withValues(alpha: 0.4),
+                    // Was a hardcoded cobalt #3B6BFF left over from the old
+                    // palette, so the glow under a red button read blue. The
+                    // bloom token is what scales the glow per theme
+                    // (0.25 light, 1.0 dark).
+                    color: s.accent.withValues(alpha: 0.4 * s.bloom),
                     blurRadius: 22,
                     offset: const Offset(0, 8),
                   ),

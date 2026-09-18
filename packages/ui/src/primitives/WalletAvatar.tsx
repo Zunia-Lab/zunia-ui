@@ -46,6 +46,9 @@ export function Avatar({
           src={src}
           alt={alt ?? ""}
           className="size-full object-cover"
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
           onLoad={onLoad}
           onError={onError}
         />

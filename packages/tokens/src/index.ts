@@ -51,7 +51,9 @@ export const status = {
   danger: "#E85A4A",
   dangerFg: "#F5C4BC",
   dangerLine: "rgba(232, 90, 74, 0.45)",
-  dangerFill: "rgba(232, 90, 74, 0.12)",
+  // 0.08, not 0.12: at 0.12 the hue read 4.38:1 on its own tint inside a
+  // raised card. At 0.08 it is 4.61:1, and it matches the light theme.
+  dangerFill: "rgba(232, 90, 74, 0.08)",
   success: "#4ED8A0",
   successFg: "#B4EFD6",
   successLine: "rgba(78, 216, 160, 0.45)",
@@ -238,7 +240,10 @@ export const themes = {
     fgDim: "#8A8A8A",
     fgFaint: "#666666",
     accent: brand.red,
-    accentFg: neutral.n1000,
+    // Ink, not white. White reads 3.88:1 on #FF1B0C, 2.87:1 mid-gradient and
+    // 1.60:1 at the gold stop; brand.void reads 5.10 / 6.90 / 12.39:1 against
+    // the same three stops, so the label clears AA across the whole ramp.
+    accentFg: brand.void,
     accentGradient: gradients.accent,
     accentGlow: gradients.accentGlow,
     surfaceGradient: gradients.surfaceDark,
@@ -257,7 +262,9 @@ export const themes = {
     stateHover: "rgba(255, 78, 18, 0.12)",
     statePress: "rgba(255, 78, 18, 0.2)",
     stateSelected: "rgba(255, 27, 12, 0.28)",
-    focusRing: "rgba(255, 138, 23, 0.45)",
+    // Opaque: at 45% alpha the ring composited to 2.48:1 on bg. Solid amber is
+    // 8.38:1 on bg, 7.84:1 on surface, 7.48:1 on surfaceRaised.
+    focusRing: brand.amber,
     focusRingInner: "transparent",
     disabledOpacity: 0.45,
     danger: status.danger,
@@ -291,7 +298,8 @@ export const themes = {
     fgDim: "#666666",
     fgFaint: "#9A9A9A",
     accent: brand.red,
-    accentFg: neutral.n1000,
+    /** Same ink as dark: the accent ramp is identical in both themes. */
+    accentFg: brand.void,
     accentGradient: gradients.accent,
     accentGlow: gradients.accentGlow,
     surfaceGradient: gradients.surfaceLight,
@@ -312,25 +320,30 @@ export const themes = {
     stateHover: "rgba(255, 27, 12, 0.08)",
     statePress: "rgba(255, 27, 12, 0.14)",
     stateSelected: "rgba(255, 27, 12, 0.12)",
-    focusRing: "rgba(255, 27, 12, 0.4)",
+    // Opaque: at 40% alpha the ring composited to 1.84:1 on bg. Solid red is
+    // 3.41:1 on bg, 3.88:1 on surface, 3.69:1 on surfaceRaised.
+    focusRing: brand.red,
     focusRingInner: "transparent",
     disabledOpacity: 0.45,
-    danger: "#C4402F",
+    // Status hues are rendered as text (Pill label, activity row, Input hint),
+    // so each clears 4.5:1 on bg, surface and its own fill. The previous set
+    // measured 4.47 / 4.10 / 3.57 / 3.83:1 on bg. New: 5.27 / 5.79 / 5.21 / 5.18.
+    danger: "#B53522",
     dangerFg: "#8A3524",
-    dangerLine: "rgba(196, 64, 47, 0.4)",
-    dangerFill: "rgba(196, 64, 47, 0.08)",
-    success: "#17845E",
+    dangerLine: "rgba(181, 53, 34, 0.4)",
+    dangerFill: "rgba(181, 53, 34, 0.08)",
+    success: "#0F6A4B",
     successFg: "#0D5B40",
-    successLine: "rgba(23, 132, 94, 0.4)",
-    successFill: "rgba(23, 132, 94, 0.08)",
-    warning: "#B86A3C",
+    successLine: "rgba(15, 106, 75, 0.4)",
+    successFill: "rgba(15, 106, 75, 0.08)",
+    warning: "#96522A",
     warningFg: "#8A4A24",
-    warningLine: "rgba(184, 106, 60, 0.4)",
-    warningFill: "rgba(184, 106, 60, 0.08)",
-    info: "#C45A0A",
+    warningLine: "rgba(150, 82, 42, 0.4)",
+    warningFill: "rgba(150, 82, 42, 0.08)",
+    info: "#A44A08",
     infoFg: "#5A3A18",
-    infoLine: "rgba(196, 90, 10, 0.4)",
-    infoFill: "rgba(196, 90, 10, 0.08)",
+    infoLine: "rgba(164, 74, 8, 0.4)",
+    infoFill: "rgba(164, 74, 8, 0.08)",
   } satisfies SemanticTheme,
 } as const;
 

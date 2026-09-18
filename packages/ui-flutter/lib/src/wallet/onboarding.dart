@@ -276,12 +276,16 @@ class ZuniaSearchField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.onChanged,
+    this.onSubmitted,
     this.hintText,
+    this.textInputAction = TextInputAction.search,
   });
 
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onSubmitted;
   final String? hintText;
+  final TextInputAction textInputAction;
 
   @override
   Widget build(BuildContext context) {
@@ -289,8 +293,11 @@ class ZuniaSearchField extends StatelessWidget {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
       autocorrect: false,
       enableSuggestions: false,
+      textInputAction: textInputAction,
+      keyboardType: TextInputType.url,
       style: zuniaMono(fontSize: 13, color: s.fg),
       decoration: InputDecoration(
         hintText: hintText,

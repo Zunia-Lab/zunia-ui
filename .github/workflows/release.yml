@@ -35,12 +35,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # No `pnpm test` here: this repo has no test script and no test files, so the line
+      # that used to be here aborted every release before changesets ran. Restore it with
+      # the first suite under packages/ui.
       - name: Verify before publishing
         run: |
           pnpm check:contrast
           pnpm check:parity
           pnpm typecheck
-          pnpm test
           pnpm build
 
       # Opens or updates a "Version Packages" PR when changesets are pending, and publishes

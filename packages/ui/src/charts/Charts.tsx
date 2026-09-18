@@ -92,57 +92,134 @@ export function AreaChart({
 }
 
 /**
- * Slice colours in order, from the mocks: cobalt, bright cobalt, soft cobalt,
- * then neutral glass for the long tail.
+ * Slice colours — accent first, then cool companions that stay readable on
+ * dark surfaces without collapsing into purple glow.
  */
 export const DONUT_COLORS = [
   "var(--z-accent)",
-  "#3874FF",
-  "var(--z-info)",
+  "#3D8BFF",
+  "#2EC4B6",
+  "#F4B942",
+  "#A78BFA",
   "var(--z-glass-2)",
 ] as const;
+
+const TAU = Math.PI * 2;
+
+function polar(cx: number, cy: number, r: number, angle: number) {
+  return {
+    x: cx + r * Math.cos(angle),
+    y: cy + r * Math.sin(angle),
+  };
+}
+
+function arcPath(
+  cx: number,
+  cy: number,
+  r: number,
+  startAngle: number,
+  endAngle: number,
+): string {
+  const sweep = endAngle - startAngle;
+  // Full ring: SVG arcs cannot cover a full circle in one shot.
+  if (sweep >= TAU - 1e-6) {
+    const mid = startAngle + Math.PI;
+    const a = polar(cx, cy, r, startAngle);
+    const b = polar(cx, cy, r, mid);
+    const c = polar(cx, cy, r, startAngle + TAU);
+    return [
+      `M ${a.x} ${a.y}`,
+      `A ${r} ${r} 0 1 1 ${b.x} ${b.y}`,
+      `A ${r} ${r} 0 1 1 ${c.x} ${c.y}`,
+    ].join(" ");
+  }
+  const large = sweep > Math.PI ? 1 : 0;
+  const start = polar(cx, cy, r, startAngle);
+  const end = polar(cx, cy, r, endAngle);
+  return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 1 ${end.x} ${end.y}`;
+}
 
 export function DonutChart({
   segments,
   centerLabel,
   centerValue,
-  size = 116,
+  size = 148,
+  strokeWidth = 14,
   className,
 }: {
   segments: { value: number; color?: string }[];
   centerLabel?: string;
   centerValue?: string;
   size?: number;
+  /** Ring thickness in viewBox units (viewBox is 100×100). */
+  strokeWidth?: number;
   className?: string;
 }) {
-  const total = segments.reduce((a, s) => a + s.value, 0) || 1;
-  let acc = 0;
-  const stops = segments.map((s, i) => {
-    const start = (acc / total) * 100;
-    acc += s.value;
-    const end = (acc / total) * 100;
-    return `${s.color ?? DONUT_COLORS[i % DONUT_COLORS.length]} ${start}% ${end}%`;
+  const total = segments.reduce((a, s) => a + Math.max(0, s.value), 0) || 1;
+  const cx = 50;
+  const cy = 50;
+  const r = 50 - strokeWidth / 2;
+  // Small visual gap between slices when there is more than one.
+  const gap = segments.length > 1 ? 0.04 : 0;
+  let angle = -Math.PI / 2;
+
+  const arcs = segments.map((segment, index) => {
+    const share = Math.max(0, segment.value) / total;
+    const sweep = Math.max(0, share * TAU - gap);
+    const start = angle + gap / 2;
+    const end = start + sweep;
+    angle += share * TAU;
+    return {
+      d: arcPath(cx, cy, r, start, end),
+      color: segment.color ?? DONUT_COLORS[index % DONUT_COLORS.length],
+      key: `${index}-${share}`,
+    };
   });
+
   return (
     <div
-      className={cn("relative flex items-center justify-center rounded-full", className)}
-      style={{
-        width: size,
-        height: size,
-        background: `conic-gradient(${stops.join(", ")})`,
-      }}
+      className={cn(
+        "relative shrink-0",
+        className,
+      )}
+      style={{ width: size, height: size }}
     >
-      <div
-        className="flex flex-col items-center justify-center rounded-full bg-surface"
-        style={{ width: size * 0.64, height: size * 0.64 }}
+      <svg
+        viewBox="0 0 100 100"
+        width={size}
+        height={size}
+        className="block overflow-visible"
+        aria-hidden
       >
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r}
+          fill="none"
+          stroke="var(--z-glass-2)"
+          strokeWidth={strokeWidth}
+        />
+        {arcs.map((arc) => (
+          <path
+            key={arc.key}
+            d={arc.d}
+            fill="none"
+            stroke={arc.color}
+            strokeWidth={strokeWidth}
+            strokeLinecap="butt"
+          />
+        ))}
+      </svg>
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
         {centerLabel ? (
-          <span className="font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider text-fg-muted">
+          <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-fg-dim">
             {centerLabel}
           </span>
         ) : null}
         {centerValue ? (
-          <span className="mt-1 text-[length:var(--z-type-heading)] font-medium text-fg">{centerValue}</span>
+          <span className="mt-0.5 text-[22px] font-semibold tabular-nums tracking-[-0.03em] text-fg">
+            {centerValue}
+          </span>
         ) : null}
       </div>
     </div>

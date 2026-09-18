@@ -15,10 +15,13 @@ export function ValidatorLogo({
   chainName,
   operatorAddress,
   identity,
+  logoUrl,
   moniker,
   size = 28,
   className,
 }: ValidatorLogoInput & {
+  /** Server-resolved URL (Cosmostation / Keybase). Preferred when present. */
+  logoUrl?: string;
   moniker: string;
   size?: number;
   className?: string;
@@ -33,7 +36,13 @@ export function ValidatorLogo({
     [chainId, chainName, operatorAddress, identity],
   );
 
-  const candidates = useMemo(() => validatorLogoCandidates(input), [input]);
+  const candidates = useMemo(() => {
+    const list = validatorLogoCandidates(input);
+    if (logoUrl && !list.includes(logoUrl)) return [logoUrl, ...list];
+    if (logoUrl) return [logoUrl, ...list.filter((u) => u !== logoUrl)];
+    return list;
+  }, [input, logoUrl]);
+
   const [cachedUrl, setCachedUrl] = useState(() =>
     readValidatorLogoCache(input),
   );
@@ -41,10 +50,17 @@ export function ValidatorLogo({
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    setCachedUrl(readValidatorLogoCache(input));
+    const cached = readValidatorLogoCache(input);
+    // Prefer a fresh server URL over a stale cache entry.
+    if (logoUrl) {
+      writeValidatorLogoCache(input, logoUrl);
+      setCachedUrl(logoUrl);
+    } else {
+      setCachedUrl(cached);
+    }
     setIndex(0);
     setFailed(false);
-  }, [input]);
+  }, [input, logoUrl]);
 
   const src = failed ? undefined : (cachedUrl ?? candidates[index]);
 
@@ -66,7 +82,7 @@ export function ValidatorLogo({
         if (cachedUrl) {
           clearValidatorLogoCache(chainId, operatorAddress);
           setCachedUrl(undefined);
-          setIndex(0);
+          setIndex(logoUrl ? 1 : 0);
           return;
         }
         if (index + 1 < candidates.length) {

@@ -25,7 +25,13 @@ jobs:
       - run: pnpm check:parity
       - run: pnpm typecheck
       - run: pnpm build
+      # gen:flutter rewrites packages/tokens-flutter from the TypeScript tokens. Running
+      # it and discarding the result only proved the generator does not crash; the diff
+      # is what catches a token edit that was never regenerated and committed, which is
+      # how web and Flutter drift apart.
       - run: pnpm gen:flutter
+      - name: Generated Flutter tokens are up to date
+        run: git diff --exit-code -- packages/tokens-flutter
 
   flutter:
     runs-on: ubuntu-latest

@@ -9,7 +9,7 @@
  * we resolve again. An unchanged identity keeps the cached URL forever.
  */
 
-const CACHE_PREFIX = "zunia.validator.logo.v1:";
+const CACHE_PREFIX = "zunia.validator.logo.v2:";
 
 /** Cosmostation directory names that do not match chain-id / pretty name. */
 const SLUG_ALIASES: Record<string, string> = {
@@ -62,6 +62,8 @@ export type ValidatorLogoInput = {
   operatorAddress: string;
   /** Hex Keybase id from `description.identity`. Empty when unset. */
   identity?: string;
+  /** Optional server-resolved image URL. */
+  logoUrl?: string;
 };
 
 export type ValidatorLogoRecord = {
@@ -105,11 +107,12 @@ export function validatorLogoCandidates(input: ValidatorLogoInput): string[] {
   if (!operator) return [];
   const urls: string[] = [];
   for (const slug of validatorLogoSlugs(input.chainId, input.chainName)) {
-    urls.push(
-      `https://raw.githubusercontent.com/cosmostation/chainlist/master/chain/${slug}/moniker/${operator}.png`,
-    );
+    // Prefer `main` — Cosmostation's default branch; `master` may 404.
     urls.push(
       `https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/${slug}/moniker/${operator}.png`,
+    );
+    urls.push(
+      `https://raw.githubusercontent.com/cosmostation/chainlist/master/chain/${slug}/moniker/${operator}.png`,
     );
   }
   return urls;

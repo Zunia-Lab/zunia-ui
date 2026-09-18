@@ -19,23 +19,25 @@
   --z-n950: #f2f2f3;
   --z-n1000: #ffffff;
 
-  /* Status defaults = light (dark theme overrides). Avoids neon-on-paper flash. */
-  --z-danger: #c4402f;
+  /* Status defaults = light, byte-identical to [data-theme="light"] below.
+     Anything painted before ThemeProvider stamps data-theme (SSR first paint,
+     the extension popup, a .zunia-root with no attribute) uses these. */
+  --z-danger: #b53522;
   --z-danger-fg: #8a3524;
-  --z-danger-line: rgba(196, 64, 47, 0.4);
-  --z-danger-fill: rgba(196, 64, 47, 0.08);
-  --z-success: #17845e;
+  --z-danger-line: rgba(181, 53, 34, 0.4);
+  --z-danger-fill: rgba(181, 53, 34, 0.08);
+  --z-success: #0f6a4b;
   --z-success-fg: #0d5b40;
-  --z-success-line: rgba(23, 132, 94, 0.4);
-  --z-success-fill: rgba(23, 132, 94, 0.08);
-  --z-warning: #b8503c;
-  --z-warning-fg: #8a3524;
-  --z-warning-line: rgba(184, 80, 60, 0.4);
-  --z-warning-fill: rgba(184, 80, 60, 0.08);
-  --z-info: #1b49b8;
-  --z-info-fg: #2b3757;
-  --z-info-line: rgba(27, 73, 184, 0.4);
-  --z-info-fill: rgba(27, 73, 184, 0.08);
+  --z-success-line: rgba(15, 106, 75, 0.4);
+  --z-success-fill: rgba(15, 106, 75, 0.08);
+  --z-warning: #96522a;
+  --z-warning-fg: #8a4a24;
+  --z-warning-line: rgba(150, 82, 42, 0.4);
+  --z-warning-fill: rgba(150, 82, 42, 0.08);
+  --z-info: #a44a08;
+  --z-info-fg: #5a3a18;
+  --z-info-line: rgba(164, 74, 8, 0.4);
+  --z-info-fill: rgba(164, 74, 8, 0.08);
 
   /* Space */
   --z-space-0: 0;
@@ -140,7 +142,9 @@
   --z-fg-dim: #666666;
   --z-fg-faint: #9a9a9a;
   --z-accent: #ff1b0c;
-  --z-accent-fg: var(--z-n1000);
+  /* Ink on the ramp. White was 3.88 / 2.87 / 1.60:1 against the gradient's
+     three stops; #0b0a09 is 5.10 / 6.90 / 12.39:1 against the same stops. */
+  --z-accent-fg: #0b0a09;
   --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
   --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
   /* Solid paper cards */
@@ -157,6 +161,13 @@
     rgba(255, 138, 23, 0.04)
   );
   --z-bloom: 0.25;
+  /* Mobile screen / sheet / tab-bar fills. Present in SemanticTheme and Dart
+     since the rebrand; web had to improvise without them. */
+  --z-screen-mid: #faf9f7;
+  --z-screen-gradient: linear-gradient(176deg, #ffffff 0%, #faf9f7 55%, #f1f0ee 100%);
+  --z-sheet-gradient: linear-gradient(180deg, #ffffff 0%, #f1f0ee 100%);
+  --z-tab-bar-bg: rgba(255, 255, 255, 0.88);
+  --z-scrim: rgba(17, 17, 17, 0.3);
   --z-overlay: rgba(17, 17, 17, 0.4);
   --z-shadow: rgba(17, 17, 17, 0.1);
   --z-card-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.06);
@@ -165,7 +176,9 @@
   --z-state-hover: rgba(255, 27, 12, 0.08);
   --z-state-press: rgba(255, 27, 12, 0.14);
   --z-state-selected: rgba(255, 27, 12, 0.12);
-  --z-focus-ring: rgba(255, 27, 12, 0.4);
+  /* Opaque: the 40% wash composited to 1.84:1 on bg. Solid is 3.41:1 on bg,
+     3.88:1 on surface, 3.69:1 on surface-raised — 1.4.11 needs 3:1. */
+  --z-focus-ring: #ff1b0c;
   --z-focus-ring-inner: transparent;
   --z-disabled-opacity: 0.45;
 
@@ -201,7 +214,7 @@
   --z-fg-dim: #8a8a8a;
   --z-fg-faint: #666666;
   --z-accent: #ff1b0c;
-  --z-accent-fg: #ffffff;
+  --z-accent-fg: #0b0a09;
   --z-overlay: rgba(11, 10, 9, 0.72);
   --z-shadow: rgba(0, 0, 0, 0.55);
   --z-glass: rgba(241, 240, 238, 0.045);
@@ -209,7 +222,8 @@
   --z-state-hover: rgba(255, 78, 18, 0.12);
   --z-state-press: rgba(255, 78, 18, 0.2);
   --z-state-selected: rgba(255, 27, 12, 0.28);
-  --z-focus-ring: rgba(255, 138, 23, 0.45);
+  /* Opaque amber: 8.38:1 on bg, 7.84:1 on surface, 7.48:1 on surface-raised. */
+  --z-focus-ring: #ff8a17;
   --z-focus-ring-inner: transparent;
   --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
   --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
@@ -234,10 +248,19 @@
     rgba(255, 138, 23, 0.08)
   );
   --z-bloom: 1;
+  --z-screen-mid: #161311;
+  --z-screen-gradient: linear-gradient(176deg, #161311 0%, #0b0a09 46%, #050506 100%);
+  --z-sheet-gradient: linear-gradient(
+    180deg,
+    rgba(22, 19, 17, 0.97),
+    rgba(11, 10, 9, 0.99)
+  );
+  --z-tab-bar-bg: rgba(11, 10, 9, 0.55);
+  --z-scrim: rgba(11, 10, 9, 0.66);
   --z-danger: #e85a4a;
   --z-danger-fg: #f5c4bc;
   --z-danger-line: rgba(232, 90, 74, 0.45);
-  --z-danger-fill: rgba(232, 90, 74, 0.12);
+  --z-danger-fill: rgba(232, 90, 74, 0.08);
   --z-success: #4ed8a0;
   --z-success-fg: #b4efd6;
   --z-success-line: rgba(78, 216, 160, 0.45);
@@ -267,7 +290,7 @@
   --z-fg-dim: #666666;
   --z-fg-faint: #9a9a9a;
   --z-accent: #ff1b0c;
-  --z-accent-fg: #ffffff;
+  --z-accent-fg: #0b0a09;
   --z-overlay: rgba(17, 17, 17, 0.4);
   --z-shadow: rgba(17, 17, 17, 0.1);
   --z-card-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.06);
@@ -276,7 +299,7 @@
   --z-state-hover: rgba(255, 27, 12, 0.08);
   --z-state-press: rgba(255, 27, 12, 0.14);
   --z-state-selected: rgba(255, 27, 12, 0.12);
-  --z-focus-ring: rgba(255, 27, 12, 0.4);
+  --z-focus-ring: #ff1b0c;
   --z-focus-ring-inner: transparent;
   --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
   --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
@@ -293,22 +316,27 @@
     rgba(255, 138, 23, 0.04)
   );
   --z-bloom: 0.25;
-  --z-danger: #c4402f;
+  --z-screen-mid: #faf9f7;
+  --z-screen-gradient: linear-gradient(176deg, #ffffff 0%, #faf9f7 55%, #f1f0ee 100%);
+  --z-sheet-gradient: linear-gradient(180deg, #ffffff 0%, #f1f0ee 100%);
+  --z-tab-bar-bg: rgba(255, 255, 255, 0.88);
+  --z-scrim: rgba(17, 17, 17, 0.3);
+  --z-danger: #b53522;
   --z-danger-fg: #8a3524;
-  --z-danger-line: rgba(196, 64, 47, 0.4);
-  --z-danger-fill: rgba(196, 64, 47, 0.08);
-  --z-success: #17845e;
+  --z-danger-line: rgba(181, 53, 34, 0.4);
+  --z-danger-fill: rgba(181, 53, 34, 0.08);
+  --z-success: #0f6a4b;
   --z-success-fg: #0d5b40;
-  --z-success-line: rgba(23, 132, 94, 0.4);
-  --z-success-fill: rgba(23, 132, 94, 0.08);
-  --z-warning: #b86a3c;
+  --z-success-line: rgba(15, 106, 75, 0.4);
+  --z-success-fill: rgba(15, 106, 75, 0.08);
+  --z-warning: #96522a;
   --z-warning-fg: #8a4a24;
-  --z-warning-line: rgba(184, 106, 60, 0.4);
-  --z-warning-fill: rgba(184, 106, 60, 0.08);
-  --z-info: #c45a0a;
+  --z-warning-line: rgba(150, 82, 42, 0.4);
+  --z-warning-fill: rgba(150, 82, 42, 0.08);
+  --z-info: #a44a08;
   --z-info-fg: #5a3a18;
-  --z-info-line: rgba(196, 90, 10, 0.4);
-  --z-info-fill: rgba(196, 90, 10, 0.08);
+  --z-info-line: rgba(164, 74, 8, 0.4);
+  --z-info-fill: rgba(164, 74, 8, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {

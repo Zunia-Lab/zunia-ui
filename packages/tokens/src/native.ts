@@ -1,4 +1,5 @@
 import {
+  brand,
   colors,
   fonts,
   fontWeights,
@@ -9,8 +10,17 @@ import {
   motion,
 } from "./index";
 
-/** Numeric / RN-friendly token map (legacy RN package; Flutter uses zunia_tokens). */
-export const nativeColors = { ...colors };
+/**
+ * Numeric / RN-friendly token map (legacy RN package; Flutter uses zunia_tokens).
+ * `colors` is the neutral ramp only, so the accent pair is added here. Both are
+ * read from the source of truth rather than copied, so they cannot drift from
+ * tokens.css / index.ts the way the three representations did before.
+ */
+export const nativeColors = {
+  ...colors,
+  accent: brand.red,
+  accentFg: themes.light.accentFg,
+} as const;
 
 export const nativeSpace = {
   0: 0,

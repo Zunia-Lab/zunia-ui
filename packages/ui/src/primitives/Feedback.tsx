@@ -101,7 +101,8 @@ export function Pill({ className, tone = "neutral", ...props }: PillProps) {
 }
 
 export interface CalloutProps extends HTMLAttributes<HTMLDivElement> {
-  tone?: "info" | "danger" | "warning" | "neutral";
+  /** Same vocabulary as {@link Pill}, so one tone name means one thing anywhere. */
+  tone?: "info" | "danger" | "warning" | "neutral" | "success";
   title?: string;
 }
 
@@ -111,7 +112,30 @@ function CalloutIcon({ tone }: { tone: NonNullable<CalloutProps["tone"]> }) {
       ? "var(--z-danger)"
       : tone === "warning"
         ? "var(--z-warning)"
-        : "currentColor";
+        : tone === "success"
+          ? "var(--z-success)"
+          : "currentColor";
+
+  if (tone === "success") {
+    return (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden
+        className="mt-0.5 shrink-0"
+      >
+        <path
+          d="M3.25 8.5 6.5 11.75 12.75 4.75"
+          stroke={stroke}
+          strokeWidth="1.35"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
 
   if (tone === "warning" || tone === "danger") {
     return (
@@ -166,6 +190,7 @@ export function Callout({
         tone === "info" && "bg-[image:var(--z-hero-soft-gradient)]",
         tone === "danger" && "bg-[var(--z-danger-fill)]",
         tone === "warning" && "bg-[var(--z-warning-fill)]",
+        tone === "success" && "bg-[var(--z-success-fill)]",
         tone === "neutral" && "bg-[var(--z-glass)]",
         className,
       )}
@@ -179,6 +204,7 @@ export function Callout({
               "text-[length:var(--z-type-row)] font-medium leading-snug",
               tone === "warning" && "text-[var(--z-warning-fg)]",
               tone === "danger" && "text-[var(--z-danger-fg)]",
+              tone === "success" && "text-[var(--z-success-fg)]",
               (tone === "info" || tone === "neutral") && "text-fg",
             )}
           >
