@@ -47,7 +47,7 @@ jobs:
 
       # Opens or updates a "Version Packages" PR when changesets are pending, and publishes
       # once that PR is merged. Two steps, one action.
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         id: changesets
         with:
           version: pnpm version
