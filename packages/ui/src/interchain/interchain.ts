@@ -239,7 +239,7 @@ export function sourceGasNote(
 ): string {
   const base = `You pay gas only on ${chainName}, in ${chainName}'s own token. The later hops are carried by relayers, who pay for them.`;
   if (!options?.venueName) return base;
-  return `${base} You do not need a ${options.venueName} account or ${options.venueName} gas — the swap runs inside packet processing.`;
+  return `${base} You do not need a ${options.venueName} account or ${options.venueName} gas. The swap runs inside packet processing.`;
 }
 
 /* -------------------------------------------------------------------------- *
@@ -346,7 +346,7 @@ const PACKET_STATUS: Readonly<
   stalled: {
     label: "Stalled",
     detail:
-      "No relayer has moved this for a while. The funds sit in the channel escrow \u2014 not lost, and still deliverable.",
+      "No relayer has moved this for a while. The funds sit in the channel escrow, not lost, and still deliverable.",
     tone: "warning",
     glyph: "\u25d4",
     terminal: false,
@@ -355,7 +355,7 @@ const PACKET_STATUS: Readonly<
   unknown: {
     label: "Unknown",
     detail:
-      "No endpoint could answer for this hop. That is not a failure \u2014 it means we do not know yet.",
+      "No endpoint could answer for this hop. That is not a failure. It means we do not know yet.",
     tone: "neutral",
     glyph: "?",
     terminal: false,
@@ -463,7 +463,7 @@ export function packetFundsSummary(
   if (options?.failure === "swap-delivery-failed") {
     return {
       state: "recoverable",
-      title: "Recoverable \u2014 action needed",
+      title: "Recoverable, action needed",
       detail: options.recoveryReady
         ? RECOVERY_READY_DETAIL
         : RECOVERY_BLOCKED_DETAIL,
@@ -522,7 +522,7 @@ export function packetFundsSummary(
     state: "unknown",
     title: "Status unknown",
     detail:
-      "No endpoint could answer for this transfer. That is not a failure \u2014 try again in a moment.",
+      "No endpoint could answer for this transfer. That is not a failure. Try again in a moment.",
     tone: "neutral",
     actionRequired: false,
   };
@@ -530,7 +530,7 @@ export function packetFundsSummary(
 
 const FUNDS_REJECTED: PacketFundsSummary = {
   state: "returned",
-  title: "Failed \u2014 funds returned",
+  title: "Failed, funds returned",
   detail:
     "A hop was rejected, and the escrow released the funds back on the source chain. Nothing is stuck.",
   tone: "danger",
@@ -539,7 +539,7 @@ const FUNDS_REJECTED: PacketFundsSummary = {
 
 const FUNDS_TIMED_OUT: PacketFundsSummary = {
   state: "returned",
-  title: "Timed out \u2014 funds returned",
+  title: "Timed out, funds returned",
   detail:
     "The packet expired before a relayer delivered it, and the escrow refunded the source chain. You can try again.",
   tone: "warning",
@@ -548,7 +548,7 @@ const FUNDS_TIMED_OUT: PacketFundsSummary = {
 
 const FUNDS_STALLED: PacketFundsSummary = {
   state: "stalled",
-  title: "Stuck \u2014 funds safe",
+  title: "Stuck, funds safe",
   detail:
     "A hop has not moved for a while. The funds sit in the channel escrow, still deliverable, and no action is needed yet.",
   tone: "warning",

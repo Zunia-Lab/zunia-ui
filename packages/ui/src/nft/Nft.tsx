@@ -573,7 +573,7 @@ export function NftDetail({
           <p className="m-0 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
             {loading
               ? "Reading metadata…"
-              : "This token's metadata extension carries no traits. That is normal — the CW721 extension is optional."}
+              : "This token's metadata extension carries no traits. That is normal. The CW721 extension is optional."}
           </p>
         )}
       </div>

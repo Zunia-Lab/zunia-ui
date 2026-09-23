@@ -428,7 +428,7 @@ class _ZuniaSwapQuotePanelState extends State<ZuniaSwapQuotePanel> {
           Text(
             high
                 ? 'This trade moves the pool a long way against you. The pool is '
-                    'thin for this size — try a smaller amount or a different route.'
+                    'thin for this size. Try a smaller amount or a different route.'
                 : 'This trade moves the pool against you by more than a normal '
                     'amount. Check the minimum received before signing.',
             style: zuniaSans(

@@ -213,7 +213,7 @@ export function PacketTracker({
       <div className={cn("flex flex-col gap-3", className)}>
         {title ? <SectionLabel>{title}</SectionLabel> : null}
         <Callout tone="danger" title="Could not read the transfer status">
-          {error} The transfer itself is unaffected by this — only our view of it.
+          {error} The transfer itself is unaffected by this, only our view of it.
         </Callout>
         {onRefresh ? (
           <Button variant="secondary" size="sm" onClick={onRefresh}>

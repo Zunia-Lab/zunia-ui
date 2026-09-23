@@ -249,7 +249,7 @@ String zuniaSourceGasNote(String chainName, {String? venueName}) {
   final base = 'You pay gas only on $chainName, in $chainName\'s own token. '
       'The later hops are carried by relayers, who pay for them.';
   if (venueName == null || venueName.isEmpty) return base;
-  return '$base You do not need a $venueName account or $venueName gas — the '
+  return '$base You do not need a $venueName account or $venueName gas. The '
       'swap runs inside packet processing.';
 }
 
@@ -387,7 +387,7 @@ ZuniaPacketStatusPresentation zuniaPacketStatusPresentation(
         status: ZuniaPacketHopStatus.stalled,
         label: 'Stalled',
         detail: 'No relayer has moved this for a while. The funds sit in the '
-            'channel escrow — not lost, and still deliverable.',
+            'channel escrow, not lost, and still deliverable.',
         tone: ZuniaInterchainTone.warning,
         glyph: '◔',
         terminal: false,
@@ -397,8 +397,8 @@ ZuniaPacketStatusPresentation zuniaPacketStatusPresentation(
       return const ZuniaPacketStatusPresentation(
         status: ZuniaPacketHopStatus.unknown,
         label: 'Unknown',
-        detail: 'No endpoint could answer for this hop. That is not a failure — '
-            'it means we do not know yet.',
+        detail: 'No endpoint could answer for this hop. That is not a failure. '
+            'It means we do not know yet.',
         tone: ZuniaInterchainTone.neutral,
         glyph: '?',
         terminal: false,
@@ -486,7 +486,7 @@ ZuniaPacketFundsSummary zuniaPacketFundsSummary(
   if (failure == ZuniaPacketFailureKind.swapDeliveryFailed) {
     return ZuniaPacketFundsSummary(
       state: ZuniaPacketFundsState.recoverable,
-      title: 'Recoverable — action needed',
+      title: 'Recoverable, action needed',
       detail: recoveryReady
           ? 'The swap ran but the final delivery failed, so the contract is '
               'holding the output for your recovery address. Nothing is lost '
@@ -549,7 +549,7 @@ ZuniaPacketFundsSummary zuniaPacketFundsSummary(
     state: ZuniaPacketFundsState.unknown,
     title: 'Status unknown',
     detail: 'No endpoint could answer for this transfer. That is not a '
-        'failure — try again in a moment.',
+        'failure. Try again in a moment.',
     tone: ZuniaInterchainTone.neutral,
     actionRequired: false,
   );
@@ -557,7 +557,7 @@ ZuniaPacketFundsSummary zuniaPacketFundsSummary(
 
 const _fundsRejected = ZuniaPacketFundsSummary(
   state: ZuniaPacketFundsState.returned,
-  title: 'Failed — funds returned',
+  title: 'Failed, funds returned',
   detail: 'A hop was rejected, and the escrow released the funds back on the '
       'source chain. Nothing is stuck.',
   tone: ZuniaInterchainTone.danger,
@@ -566,7 +566,7 @@ const _fundsRejected = ZuniaPacketFundsSummary(
 
 const _fundsTimedOut = ZuniaPacketFundsSummary(
   state: ZuniaPacketFundsState.returned,
-  title: 'Timed out — funds returned',
+  title: 'Timed out, funds returned',
   detail: 'The packet expired before a relayer delivered it, and the escrow '
       'refunded the source chain. You can try again.',
   tone: ZuniaInterchainTone.warning,
@@ -575,7 +575,7 @@ const _fundsTimedOut = ZuniaPacketFundsSummary(
 
 const _fundsStalled = ZuniaPacketFundsSummary(
   state: ZuniaPacketFundsState.stalled,
-  title: 'Stuck — funds safe',
+  title: 'Stuck, funds safe',
   detail: 'A hop has not moved for a while. The funds sit in the channel '
       'escrow, still deliverable, and no action is needed yet.',
   tone: ZuniaInterchainTone.warning,

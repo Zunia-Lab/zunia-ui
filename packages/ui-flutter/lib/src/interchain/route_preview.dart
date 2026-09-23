@@ -318,7 +318,7 @@ class ZuniaRoutePreview extends StatelessWidget {
             title: loudCount == 1
                 ? '1 channel on this route is not verified'
                 : '$loudCount channels on this route are not verified',
-            body: 'Sending over the wrong channel does not fail — it delivers a '
+            body: 'Sending over the wrong channel does not fail. It delivers a '
                 'token the destination chain does not recognise, and that cannot '
                 'be undone by retrying. Verify each highlighted hop before you '
                 'sign.',

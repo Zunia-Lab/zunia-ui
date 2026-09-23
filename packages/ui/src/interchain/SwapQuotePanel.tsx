@@ -349,7 +349,7 @@ export function SwapQuotePanel({
               </div>
               <p className="m-0 mt-1 text-[length:var(--z-type-micro)] leading-relaxed text-fg-muted">
                 {severity === "high"
-                  ? "This trade moves the pool a long way against you. The pool is thin for this size — try a smaller amount or a different route."
+                  ? "This trade moves the pool a long way against you. The pool is thin for this size. Try a smaller amount or a different route."
                   : "This trade moves the pool against you by more than a normal amount. Check the minimum received before signing."}
               </p>
             </div>

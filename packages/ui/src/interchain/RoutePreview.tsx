@@ -228,7 +228,7 @@ export function RoutePreview({
               : `${loudCount} channels on this route are not verified`
           }
         >
-          Sending over the wrong channel does not fail — it delivers a token the
+          Sending over the wrong channel does not fail. It delivers a token the
           destination chain does not recognise, and that cannot be undone by
           retrying. Verify each highlighted hop before you sign.
         </Callout>

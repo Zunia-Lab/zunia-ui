@@ -166,7 +166,7 @@ class ZuniaPacketTracker extends StatelessWidget {
           ZuniaCallout(
             tone: ZuniaCalloutTone.danger,
             title: 'Could not read the transfer status',
-            body: '${error!} The transfer itself is unaffected by this — only '
+            body: '${error!} The transfer itself is unaffected by this, only '
                 'our view of it.',
           ),
           if (onRefresh != null) ...[

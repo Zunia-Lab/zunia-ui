@@ -169,10 +169,10 @@ it*:
 | State | Reads as | User's next action |
 |-------|----------|--------------------|
 | `in-flight` | Moving | wait |
-| `stalled` | Stuck — funds safe | wait, check back |
+| `stalled` | Stuck, funds safe | wait, check back |
 | `arrived` | Arrived | none |
-| `returned` | Failed / timed out — funds returned | retry if they want |
-| `recoverable` | Recoverable — action needed | claim it |
+| `returned` | Failed / timed out, funds returned | retry if they want |
+| `recoverable` | Recoverable, action needed | claim it |
 | `unknown` | Status unknown | retry the read |
 
 `recoverable` outranks every other state, because it is the only one that stops

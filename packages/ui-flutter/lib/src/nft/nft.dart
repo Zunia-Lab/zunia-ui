@@ -858,7 +858,7 @@ class ZuniaNftDetail extends StatelessWidget {
             loading
                 ? 'Reading metadata…'
                 : 'This token\'s metadata extension carries no traits. That is '
-                    'normal — the CW721 extension is optional.',
+                    'normal. The CW721 extension is optional.',
             style: zuniaSans(
               fontSize: ZuniaType.caption,
               height: 1.5,

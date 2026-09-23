@@ -84,7 +84,7 @@ export function ScreenScaffold({
             </button>
           ) : null}
           {title ? (
-            <h1 className="flex-1 text-[15px] font-medium tracking-tight text-fg">
+            <h1 className="min-w-0 flex-1 truncate text-[15px] font-medium tracking-tight text-fg">
               {title}
             </h1>
           ) : (
