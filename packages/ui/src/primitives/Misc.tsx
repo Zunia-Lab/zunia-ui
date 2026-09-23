@@ -61,26 +61,41 @@ export function Td({ className, ...props }: HTMLAttributes<HTMLTableCellElement>
   );
 }
 
+const TOAST_TONES = {
+  success: { icon: "✓", badge: "bg-accent text-accent-fg" },
+  danger: { icon: "!", badge: "bg-[var(--z-danger-fill)] text-[var(--z-danger)]" },
+  neutral: { icon: "i", badge: "bg-[var(--z-glass-2)] text-fg-muted" },
+} as const;
+
 export function Toast({
   title,
   meta,
+  tone = "success",
   className,
 }: {
   title: string;
   meta?: string;
+  tone?: keyof typeof TOAST_TONES;
   className?: string;
 }) {
+  const look = TOAST_TONES[tone];
   return (
     <div
-      role="status"
+      role={tone === "danger" ? "alert" : "status"}
       className={cn(
         "flex items-center gap-2.5 rounded-[14px] border border-[var(--z-line-strong)] bg-surface px-3 py-3",
         "shadow-[0_16px_34px_var(--z-shadow)]",
         className,
       )}
     >
-      <span className="flex size-[26px] shrink-0 items-center justify-center rounded-[8px] bg-accent text-[12px] text-accent-fg">
-        ✓
+      <span
+        aria-hidden
+        className={cn(
+          "flex size-[26px] shrink-0 items-center justify-center rounded-[8px] text-[12px] font-semibold",
+          look.badge,
+        )}
+      >
+        {look.icon}
       </span>
       <span className="flex-1 text-[12px] font-medium text-fg">{title}</span>
       {meta ? (

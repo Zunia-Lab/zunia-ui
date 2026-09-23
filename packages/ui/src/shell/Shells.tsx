@@ -1,5 +1,6 @@
 "use client";
 
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import type { ReactNode } from "react";
 import { cn, focusRing } from "../lib/cn";
 
@@ -179,40 +180,51 @@ export function TabBar({
   );
 }
 
+/**
+ * Side panel over the page. Built on the Radix dialog, so it traps focus while
+ * open, closes on Escape or a click on the scrim, and gives focus back to
+ * whatever opened it.
+ */
 export function Drawer({
   open,
   onClose,
   children,
   className,
   side = "right",
+  title = "Menu",
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
   className?: string;
   side?: "left" | "right";
+  /** Accessible name. Visually hidden; the drawer's own content is the visible heading. */
+  title?: string;
 }) {
-  if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50">
-      <button
-        type="button"
-        className="absolute inset-0 bg-[var(--z-overlay)]"
-        aria-label="Close drawer"
-        onClick={onClose}
-      />
-      <aside
-        className={cn(
-          "absolute inset-y-0 w-[min(320px,calc(100%-24px))] overflow-auto bg-[var(--z-surface-sunken)] p-4 shadow-[0_24px_48px_var(--z-shadow)]",
-          side === "right"
-            ? "right-0 rounded-l-[28px]"
-            : "left-0 rounded-r-[28px]",
-          className,
-        )}
-      >
-        {children}
-      </aside>
-    </div>
+    <DialogPrimitive.Root
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[var(--z-overlay)]" />
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className={cn(
+            "fixed inset-y-0 z-50 w-[min(320px,calc(100%-24px))] overflow-auto bg-[var(--z-surface-sunken)] p-4 shadow-[0_24px_48px_var(--z-shadow)] outline-none",
+            side === "right"
+              ? "right-0 rounded-l-[28px]"
+              : "left-0 rounded-r-[28px]",
+            className,
+          )}
+        >
+          <DialogPrimitive.Title className="sr-only">{title}</DialogPrimitive.Title>
+          {children}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }
 

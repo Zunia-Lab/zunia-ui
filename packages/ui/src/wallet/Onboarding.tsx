@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { cn, focusRing } from "../lib/cn";
 
 /** Thin progress rail + "Step 2 of 4 · Verify" caption. */
@@ -190,13 +190,26 @@ export function SearchField({
   placeholder,
   className,
   "aria-label": ariaLabel,
-}: {
+  inputRef,
+  onKeyDown,
+  ...inputProps
+}: Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange" | "type" | "className"
+> & {
   value: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
   className?: string;
   "aria-label"?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
 }) {
+  const localRef = useRef<HTMLInputElement | null>(null);
+  const setRefs = (node: HTMLInputElement | null) => {
+    localRef.current = node;
+    if (typeof inputRef === "function") inputRef(node);
+    else if (inputRef) (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+  };
   return (
     <div className={cn("relative flex min-w-0 items-center", className)}>
       <span
@@ -206,15 +219,25 @@ export function SearchField({
         ⌕
       </span>
       <input
+        {...inputProps}
+        ref={setRefs}
         type="search"
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
+        onKeyDown={(e) => {
+          onKeyDown?.(e);
+          if (!e.defaultPrevented && e.key === "Escape" && value) {
+            e.preventDefault();
+            onValueChange("");
+          }
+        }}
         placeholder={placeholder}
         aria-label={ariaLabel ?? placeholder}
         autoComplete="off"
         spellCheck={false}
         className={cn(
-          "w-full rounded-[12px] border border-[var(--z-line)] bg-[var(--z-glass)] py-2.5 pl-9 pr-3",
+          "w-full rounded-[12px] border border-[var(--z-line)] bg-[var(--z-glass)] py-2.5 pl-9",
+          value ? "pr-9" : "pr-3",
           "font-mono text-[length:var(--z-type-row)] text-fg placeholder:text-fg-dim",
           "transition-[border-color,box-shadow] duration-[var(--z-duration-base)]",
           "focus-visible:border-[color-mix(in_srgb,var(--z-accent)_55%,var(--z-line))]",
@@ -222,6 +245,31 @@ export function SearchField({
           focusRing,
         )}
       />
+      {value ? (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            onValueChange("");
+            localRef.current?.focus();
+          }}
+          className={cn(
+            "absolute right-1.5 flex size-7 items-center justify-center rounded-full text-fg-dim",
+            "transition-colors duration-[var(--z-duration-base)] hover:bg-[var(--z-state-hover)] hover:text-fg",
+            focusRing,
+          )}
+        >
+          <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+            <path
+              d="M4 4l8 8M12 4l-8 8"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      ) : null}
     </div>
   );
 }
