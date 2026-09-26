@@ -7,62 +7,20 @@ library;
 
 const validatorLogoCachePrefix = 'zunia.validator.logo.v1:';
 
-const _slugAliases = <String, String>{
-  'cosmoshub-4': 'cosmos',
-  'osmosis-1': 'osmosis',
-  'celestia': 'celestia',
-  'neutron-1': 'neutron',
-  'akashnet-2': 'akash',
-  'juno-1': 'juno',
-  'kaiyo-1': 'kujira',
-  'phoenix-1': 'terra',
-  'dydx-mainnet-1': 'dydx',
-  'injective-1': 'injective',
-  'pacific-1': 'sei',
-  'core-1': 'persistence',
-  'stargaze-1': 'stargaze',
-  'stride-1': 'stride',
-  'noble-1': 'noble',
-  'axelar-dojo-1': 'axelar',
-  'evmos_9001-2': 'evmos',
-  'safrochain-1': 'safrochain',
-  'bbn-1': 'babylon',
-  'pio-mainnet-1': 'provenance',
-  'laozi-mainnet': 'band',
-  'regen-1': 'regen',
-  'sommelier-3': 'sommelier',
-  'umee-1': 'umee',
-  'quicksilver-2': 'quicksilver',
-  'chihuahua-1': 'chihuahua',
-  'bitcanna-1': 'bitcanna',
-  'bitsong-2b': 'bitsong',
-  'comdex-1': 'comdex',
-  'crescent-1': 'crescent',
-  'desmos-mainnet': 'desmos',
-  'emoney-3': 'emoney',
-  'fetchhub-4': 'fetchai',
-  'gravity-bridge-3': 'gravity-bridge',
-  'irishub-1': 'iris',
-  'kava_2222-10': 'kava',
-  'likecoin-mainnet-2': 'likecoin',
-  'lum-network-1': 'lum',
-  'mantle-1': 'assetmantle',
-  'osmosis-testnet': 'osmosis-testnet',
-  'theta-testnet-001': 'cosmos-testnet',
-};
-
 class ValidatorLogoInput {
   const ValidatorLogoInput({
     required this.chainId,
     required this.operatorAddress,
     this.chainName,
     this.identity = '',
+    this.logoSlugs,
   });
 
   final String chainId;
   final String? chainName;
   final String operatorAddress;
   final String identity;
+  final List<String>? logoSlugs;
 }
 
 class ValidatorLogoRecord {
@@ -106,14 +64,24 @@ String? _slug(String? value) {
   return slug.isEmpty ? null : slug;
 }
 
-List<String> validatorLogoSlugs(String chainId, [String? chainName]) {
+List<String> validatorLogoSlugs(
+  String chainId, [
+  String? chainName,
+  List<String>? extra,
+  String? operatorAddress,
+]) {
   final slugs = <String>[];
   void push(String? value) {
     final slug = _slug(value);
     if (slug != null && !slugs.contains(slug)) slugs.add(slug);
   }
 
-  push(_slugAliases[chainId]);
+  for (final slug in extra ?? const <String>[]) {
+    push(slug);
+  }
+  final prefix = RegExp(r'^([a-z0-9]+)valoper', caseSensitive: false)
+      .firstMatch(operatorAddress ?? '');
+  push(prefix?.group(1));
   push(chainName?.replaceAll(RegExp(r'\s+'), ''));
   push(chainName);
   push(chainId.replaceAll(RegExp(r'_\d+-\d+$'), '').replaceAll(RegExp(r'-\d+$'), ''));
@@ -125,7 +93,12 @@ List<String> validatorLogoCandidates(ValidatorLogoInput input) {
   final operator = input.operatorAddress.trim();
   if (operator.isEmpty) return const [];
   final urls = <String>[];
-  for (final slug in validatorLogoSlugs(input.chainId, input.chainName)) {
+  for (final slug in validatorLogoSlugs(
+    input.chainId,
+    input.chainName,
+    input.logoSlugs,
+    operator,
+  )) {
     urls.add(
       'https://raw.githubusercontent.com/cosmostation/chainlist/master/chain/$slug/moniker/$operator.png',
     );

@@ -18,7 +18,7 @@ import {
   SheetContent,
 } from "../primitives/Dialog";
 import { Avatar } from "../primitives/WalletAvatar";
-import { AddressChip, Amount, ChainBadge } from "./Display";
+import { AddressChip, Amount, ChainBadge, TokenLogo } from "./Display";
 import {
   FeeSummary,
   MessageDecodeList,
@@ -211,7 +211,13 @@ export function NetworkPickerSheet({
   onSearchChange,
   className,
 }: {
-  networks: { chainId: string; name: string; symbol?: string }[];
+  networks: {
+    chainId: string;
+    name: string;
+    symbol?: string;
+    iconUrl?: string;
+    verified?: boolean;
+  }[];
   activeChainId?: string;
   onSelect: (chainId: string) => void;
   search?: string;
@@ -255,9 +261,18 @@ export function NetworkPickerSheet({
                 focusRing,
               )}
             >
-              <span>
-                <span className="block text-[13px] font-medium">{n.name}</span>
-                <span className="font-mono text-[10px] text-fg-muted">{n.chainId}</span>
+              <span className="flex min-w-0 items-center gap-2.5">
+                <TokenLogo
+                  src={n.iconUrl}
+                  symbol={n.name}
+                  size={26}
+                  verified={n.verified}
+                  verifiedLabel="Listed in the Cosmos chain registry"
+                />
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-medium">{n.name}</span>
+                  <span className="font-mono text-[10px] text-fg-muted">{n.chainId}</span>
+                </span>
               </span>
               {n.symbol ? (
                 <span className="font-mono text-[11px] text-fg-muted">{n.symbol}</span>
@@ -348,40 +363,56 @@ export function AssetDetail({
 export function ValidatorDetail({
   name,
   moniker,
+  avatar,
   commission,
   votingPower,
   apr,
+  bonded,
+  website,
+  details,
   status,
   actions,
   className,
 }: {
   name: string;
   moniker?: string;
+  avatar?: ReactNode;
   commission: string;
   votingPower: string;
   apr?: string;
+  bonded?: string;
+  website?: ReactNode;
+  details?: string;
   status?: string;
   actions?: ReactNode;
   className?: string;
 }) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div>
-        <div className="text-[18px] font-medium text-fg">{name}</div>
-        {moniker ? (
-          <div className="mt-1 font-mono text-[11px] text-fg-muted">{moniker}</div>
-        ) : null}
-        {status ? (
-          <div className="mt-2 inline-flex rounded-full bg-[var(--z-glass-2)] px-2 py-0.5 font-mono text-[10px] uppercase text-fg-muted">
-            {status}
-          </div>
-        ) : null}
+      <div className="flex items-start gap-3">
+        {avatar ? <div className="shrink-0">{avatar}</div> : null}
+        <div className="min-w-0 flex-1">
+          <div className="text-[18px] font-medium leading-tight text-fg">{name}</div>
+          {moniker ? (
+            <div className="mt-1 truncate font-mono text-[11px] text-fg-muted">{moniker}</div>
+          ) : null}
+          {status ? (
+            <div className="mt-2 inline-flex rounded-full bg-[var(--z-glass-2)] px-2 py-0.5 font-mono text-[10px] uppercase text-fg-muted">
+              {status}
+            </div>
+          ) : null}
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <KeyValueRow label="Commission" value={commission} />
         <KeyValueRow label="Voting power" value={votingPower} />
         {apr ? <KeyValueRow label="APR" value={apr} /> : null}
+        {bonded ? <KeyValueRow label="Bonded" value={bonded} /> : null}
+        {website ? <KeyValueRow label="Website" value={website} /> : null}
       </div>
+      {details ? (
+        <p className="line-clamp-5 text-[13px] leading-snug text-fg-muted">{details}</p>
+      ) : null}
       {actions}
     </div>
   );

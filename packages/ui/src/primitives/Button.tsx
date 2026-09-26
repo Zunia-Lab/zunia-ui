@@ -7,7 +7,7 @@ import { cn, focusRing, interactiveMotion } from "../lib/cn";
 
 const buttonVariants = cva(
   cn(
-    "inline-flex items-center justify-center gap-2 font-medium font-sans tracking-tight",
+    "inline-flex items-center justify-center gap-2 font-semibold font-sans",
     "rounded-full",
     interactiveMotion,
     "disabled:opacity-[var(--z-disabled-opacity)] disabled:pointer-events-none disabled:shadow-none",
@@ -18,21 +18,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // The cobalt→violet ramp plus its glow is the product's primary action.
+        // Deeper crimson than the brand ramp, so the label stays white and readable.
         primary: cn(
-          "bg-[image:var(--z-accent-gradient)] text-[var(--z-accent-fg)]",
-          "shadow-[var(--z-accent-glow)]",
-          "hover:brightness-110 hover:shadow-[var(--z-accent-glow)]",
-          "active:brightness-95 active:shadow-[0_4px_14px_color-mix(in_srgb,var(--z-accent)_32%,transparent)]",
+          "bg-[image:var(--z-button-gradient)] text-[var(--z-button-fg)]",
+          "shadow-[0_10px_22px_rgba(154,16,22,0.34)]",
+          "hover:brightness-110",
+          "active:brightness-95",
         ),
         secondary: cn(
-          "border border-[var(--z-line)] bg-[var(--z-glass)] text-fg",
-          "hover:border-[var(--z-line-strong)] hover:bg-[var(--z-state-hover)]",
+          "border border-[var(--z-line-strong)] bg-[var(--z-glass)] text-fg",
+          "hover:bg-[var(--z-state-hover)]",
           "active:bg-[var(--z-state-press)]",
         ),
         ghost: cn(
-          "bg-transparent text-fg-muted",
-          "hover:text-fg hover:bg-[var(--z-state-hover)]",
+          "bg-transparent text-fg",
+          "hover:bg-[var(--z-state-hover)]",
           "active:bg-[var(--z-state-press)]",
         ),
         danger: cn(

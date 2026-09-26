@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Avatar } from "../primitives/WalletAvatar";
 import {
-  clearValidatorLogoCache,
+  fetchValidatorAvatar,
+  peekCachedAvatarUrl,
   readValidatorLogoCache,
   validatorLogoCandidates,
   writeValidatorLogoCache,
@@ -16,77 +17,106 @@ export function ValidatorLogo({
   operatorAddress,
   identity,
   logoUrl,
+  logoSlugs,
   moniker,
   size = 28,
   className,
 }: ValidatorLogoInput & {
-  /** Server-resolved URL (Cosmostation / Keybase). Preferred when present. */
   logoUrl?: string;
   moniker: string;
   size?: number;
   className?: string;
 }) {
-  const input = useMemo<ValidatorLogoInput>(
-    () => ({
+  const fallbacks = useMemo(
+    () =>
+      validatorLogoCandidates({
+        chainId,
+        chainName,
+        operatorAddress,
+        identity,
+        logoSlugs,
+      }),
+    [chainId, chainName, operatorAddress, identity, logoSlugs],
+  );
+
+  const cached =
+    peekCachedAvatarUrl(identity ?? "") ||
+    readValidatorLogoCache({
       chainId,
-      chainName,
       operatorAddress,
       identity: identity ?? "",
-    }),
-    [chainId, chainName, operatorAddress, identity],
-  );
+    });
+  const initial = logoUrl || cached || fallbacks[0];
 
-  const candidates = useMemo(() => {
-    const list = validatorLogoCandidates(input);
-    if (logoUrl && !list.includes(logoUrl)) return [logoUrl, ...list];
-    if (logoUrl) return [logoUrl, ...list.filter((u) => u !== logoUrl)];
-    return list;
-  }, [input, logoUrl]);
-
-  const [cachedUrl, setCachedUrl] = useState(() =>
-    readValidatorLogoCache(input),
+  const [src, setSrc] = useState<string | undefined>(initial);
+  const [fallbackIndex, setFallbackIndex] = useState(() =>
+    logoUrl || cached ? -1 : fallbacks[0] ? 0 : -1,
   );
-  const [index, setIndex] = useState(0);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState(!initial);
 
   useEffect(() => {
-    const cached = readValidatorLogoCache(input);
-    // Prefer a fresh server URL over a stale cache entry.
-    if (logoUrl) {
-      writeValidatorLogoCache(input, logoUrl);
-      setCachedUrl(logoUrl);
-    } else {
-      setCachedUrl(cached);
-    }
-    setIndex(0);
-    setFailed(false);
-  }, [input, logoUrl]);
+    const nextCached =
+      peekCachedAvatarUrl(identity ?? "") ||
+      readValidatorLogoCache({
+        chainId,
+        operatorAddress,
+        identity: identity ?? "",
+      });
+    const nextInitial = logoUrl || nextCached || fallbacks[0];
+    setSrc(nextInitial);
+    setFallbackIndex(logoUrl || nextCached ? -1 : fallbacks[0] ? 0 : -1);
+    setFailed(!nextInitial);
 
-  const src = failed ? undefined : (cachedUrl ?? candidates[index]);
+    if (logoUrl) {
+      writeValidatorLogoCache(
+        { chainId, operatorAddress, identity: identity ?? "" },
+        logoUrl,
+      );
+      return;
+    }
+    const keybaseHit = peekCachedAvatarUrl(identity ?? "");
+    if (keybaseHit || !identity) return;
+
+    let cancelled = false;
+    void fetchValidatorAvatar(identity).then((url) => {
+      if (cancelled || !url) return;
+      writeValidatorLogoCache(
+        { chainId, operatorAddress, identity },
+        url,
+      );
+      setSrc(url);
+      setFallbackIndex(-1);
+      setFailed(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [chainId, operatorAddress, identity, logoUrl, fallbacks]);
+
+  const shown = failed ? undefined : src;
 
   return (
     <Avatar
-      src={src}
+      src={shown}
       alt={moniker}
       fallback={moniker}
       size={size}
       className={className}
       onLoad={
-        src
+        shown
           ? () => {
-              writeValidatorLogoCache(input, src);
+              writeValidatorLogoCache(
+                { chainId, operatorAddress, identity: identity ?? "" },
+                shown,
+              );
             }
           : undefined
       }
       onError={() => {
-        if (cachedUrl) {
-          clearValidatorLogoCache(chainId, operatorAddress);
-          setCachedUrl(undefined);
-          setIndex(logoUrl ? 1 : 0);
-          return;
-        }
-        if (index + 1 < candidates.length) {
-          setIndex((current) => current + 1);
+        const next = fallbackIndex + 1;
+        if (next >= 0 && next < fallbacks.length) {
+          setSrc(fallbacks[next]);
+          setFallbackIndex(next);
           return;
         }
         setFailed(true);

@@ -59,12 +59,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
-            className={cn(inputVariants({ state }), trailing && "pr-20", className)}
+            className={cn(inputVariants({ state }), trailing && "pr-16", className)}
             aria-invalid={state === "error" || undefined}
             {...rest}
           />
           {trailing ? (
-            <span className="absolute right-3 font-mono text-[length:var(--z-type-micro)] tracking-wider text-fg-muted">
+            <span className="absolute inset-y-0 right-1.5 flex items-center font-mono text-[length:var(--z-type-micro)] tracking-wider text-fg-muted">
               {trailing}
             </span>
           ) : null}

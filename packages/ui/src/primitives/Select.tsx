@@ -23,8 +23,16 @@ export function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon className="text-[15px] leading-none text-fg-dim">
-        ▾
+      <SelectPrimitive.Icon className="flex size-4 shrink-0 items-center justify-center text-fg-dim">
+        <svg viewBox="0 0 16 16" width={16} height={16} fill="none" aria-hidden>
+          <path
+            d="M4 6.25 8 10.25 12 6.25"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

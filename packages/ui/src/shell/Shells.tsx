@@ -48,6 +48,8 @@ export function ScreenScaffold({
   header,
   /** Pinned below the scroll area, e.g. Back / Continue actions. */
   footer,
+  /** Pinned under the title, above the scroll, e.g. a search field. */
+  toolbar,
   /** Pinned below the footer, e.g. the root tab bar. Rendered without chrome. */
   bottomBar,
   className,
@@ -59,6 +61,7 @@ export function ScreenScaffold({
   children: ReactNode;
   header?: ReactNode;
   footer?: ReactNode;
+  toolbar?: ReactNode;
   bottomBar?: ReactNode;
   className?: string;
   contentClassName?: string;
@@ -93,6 +96,11 @@ export function ScreenScaffold({
           {right}
         </header>
       )}
+      {toolbar ? (
+        <div className="relative z-[2] w-full shrink-0 border-b border-[var(--z-line)] bg-bg px-4 pb-2.5">
+          {toolbar}
+        </div>
+      ) : null}
       <div
         className={cn(
           "min-h-0 w-full max-w-full flex-1 overflow-x-clip overflow-y-auto",
@@ -155,8 +163,8 @@ export function TabBar({
               "relative flex items-center rounded-full font-mono text-[9px] uppercase tracking-[0.1em]",
               "transition-[background-color,color,transform] duration-[var(--z-duration-fast)] ease-[var(--z-ease)]",
               active
-                ? "gap-1.5 bg-accent py-1.5 pl-1.5 pr-3 font-medium text-accent-fg"
-                : "flex-col gap-1 px-2.5 py-1 text-fg-dim hover:bg-[var(--z-state-hover)] hover:text-fg active:bg-[var(--z-state-press)]",
+                ? "gap-1.5 bg-[var(--z-button)] py-1.5 pl-1.5 pr-3 font-semibold text-[var(--z-button-fg)]"
+                : "flex-col gap-1 px-2.5 py-1 text-fg-muted hover:bg-[var(--z-state-hover)] hover:text-fg active:bg-[var(--z-state-press)]",
               focusRing,
             )}
           >
@@ -164,7 +172,7 @@ export function TabBar({
               className={cn(
                 "flex items-center justify-center",
                 active &&
-                  "size-[22px] rounded-full bg-[color-mix(in_srgb,var(--z-accent-fg)_20%,transparent)]",
+                  "size-[22px] rounded-full bg-[color-mix(in_srgb,var(--z-button-fg)_22%,transparent)]",
               )}
             >
               {item.icon}

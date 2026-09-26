@@ -13,6 +13,7 @@ class ZuniaValidatorAvatar extends StatefulWidget {
     required this.moniker,
     this.chainName,
     this.identity = '',
+    this.logoSlugs,
     this.size = 28,
     this.cachedUrl,
     this.onResolved,
@@ -23,6 +24,7 @@ class ZuniaValidatorAvatar extends StatefulWidget {
   final String? chainName;
   final String operatorAddress;
   final String identity;
+  final List<String>? logoSlugs;
   final String moniker;
   final double size;
   final String? cachedUrl;
@@ -45,6 +47,7 @@ class _ZuniaValidatorAvatarState extends State<ZuniaValidatorAvatar> {
         chainName: widget.chainName,
         operatorAddress: widget.operatorAddress,
         identity: widget.identity,
+        logoSlugs: widget.logoSlugs,
       );
 
   List<String> get _candidates => validatorLogoCandidates(_input);
@@ -62,6 +65,7 @@ class _ZuniaValidatorAvatarState extends State<ZuniaValidatorAvatar> {
         oldWidget.chainName != widget.chainName ||
         oldWidget.operatorAddress != widget.operatorAddress ||
         oldWidget.identity != widget.identity ||
+        oldWidget.logoSlugs != widget.logoSlugs ||
         oldWidget.cachedUrl != widget.cachedUrl) {
       _detach();
       _url = null;

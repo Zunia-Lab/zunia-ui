@@ -2,6 +2,7 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import { cn, focusRing } from "../lib/cn";
+import { TokenLogo } from "./Display";
 
 /** Thin progress rail + "Step 2 of 4 · Verify" caption. */
 export function StepProgress({
@@ -68,6 +69,7 @@ export function NetworkOptionCard({
   symbol,
   iconUrl,
   testnet = false,
+  verified = false,
   selected = false,
   onToggle,
   control = "check",
@@ -78,15 +80,14 @@ export function NetworkOptionCard({
   symbol?: string;
   iconUrl?: string;
   testnet?: boolean;
+  /** Official cosmos/chain-registry membership. */
+  verified?: boolean;
   selected?: boolean;
   onToggle: () => void;
   /** `check` suits a one-off pick, `switch` suits a persistent on/off list. */
   control?: "check" | "switch";
   className?: string;
 }) {
-  const [iconFailed, setIconFailed] = useState(false);
-  const showIcon = Boolean(iconUrl) && !iconFailed;
-
   return (
     <button
       type="button"
@@ -104,27 +105,16 @@ export function NetworkOptionCard({
         className,
       )}
     >
-      <span
+      <TokenLogo
+        src={iconUrl}
+        symbol={name}
+        size={36}
+        verified={verified}
+        verifiedLabel="Listed in the Cosmos chain registry"
         className={cn(
-          "flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--z-glass-2)]",
-          selected && "shadow-[0_0_0_1.5px_color-mix(in_srgb,var(--z-accent)_70%,transparent)]",
+          selected && "shadow-[0_0_0_1.5px_color-mix(in_srgb,var(--z-accent)_70%,transparent)] rounded-full",
         )}
-      >
-        {showIcon ? (
-          <img
-            src={iconUrl}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="size-full object-cover"
-            onError={() => setIconFailed(true)}
-          />
-        ) : (
-          <span className="font-mono text-[length:var(--z-type-meta)] text-fg-muted">
-            {name.slice(0, 2).toUpperCase()}
-          </span>
-        )}
-      </span>
+      />
 
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-1.5">
@@ -183,6 +173,33 @@ export function NetworkOptionCard({
   );
 }
 
+function FieldIconSearch() {
+  return (
+    <svg viewBox="0 0 16 16" width={14} height={14} fill="none" aria-hidden className="block">
+      <circle cx="7" cy="7" r="4.4" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M10.35 10.35 14 14"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function FieldIconClear() {
+  return (
+    <svg viewBox="0 0 16 16" width={14} height={14} fill="none" aria-hidden>
+      <path
+        d="M4 4l8 8M12 4l-8 8"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 /** Search field with a leading glyph, sized for popup lists. */
 export function SearchField({
   value,
@@ -192,6 +209,7 @@ export function SearchField({
   "aria-label": ariaLabel,
   inputRef,
   onKeyDown,
+  compact,
   ...inputProps
 }: Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -203,6 +221,8 @@ export function SearchField({
   className?: string;
   "aria-label"?: string;
   inputRef?: React.Ref<HTMLInputElement>;
+  /** Shorter row for tight filter bars. */
+  compact?: boolean;
 }) {
   const localRef = useRef<HTMLInputElement | null>(null);
   const setRefs = (node: HTMLInputElement | null) => {
@@ -211,12 +231,15 @@ export function SearchField({
     else if (inputRef) (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
   };
   return (
-    <div className={cn("relative flex min-w-0 items-center", className)}>
+    <div className={cn("relative flex min-w-0", className)}>
       <span
         aria-hidden
-        className="pointer-events-none absolute left-3 text-[length:var(--z-type-row)] text-fg-dim"
+        className={cn(
+          "pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center text-fg-dim",
+          compact ? "w-8" : "w-10",
+        )}
       >
-        ⌕
+        <FieldIconSearch />
       </span>
       <input
         {...inputProps}
@@ -236,9 +259,10 @@ export function SearchField({
         autoComplete="off"
         spellCheck={false}
         className={cn(
-          "w-full rounded-[12px] border border-[var(--z-line)] bg-[var(--z-glass)] py-2.5 pl-9",
-          value ? "pr-9" : "pr-3",
-          "font-mono text-[length:var(--z-type-row)] text-fg placeholder:text-fg-dim",
+          "w-full appearance-none border border-[var(--z-line)] bg-[var(--z-glass)] py-0",
+          compact ? "h-8 rounded-full pl-8" : "h-11 rounded-[var(--z-radius-lg)] pl-10",
+          value ? (compact ? "pr-8" : "pr-10") : "pr-3.5",
+          "font-mono text-[length:var(--z-type-row)] leading-none text-fg placeholder:text-fg-dim",
           "transition-[border-color,box-shadow] duration-[var(--z-duration-base)]",
           "focus-visible:border-[color-mix(in_srgb,var(--z-accent)_55%,var(--z-line))]",
           "[&::-webkit-search-cancel-button]:appearance-none",
@@ -255,19 +279,15 @@ export function SearchField({
             localRef.current?.focus();
           }}
           className={cn(
-            "absolute right-1.5 flex size-7 items-center justify-center rounded-full text-fg-dim",
-            "transition-colors duration-[var(--z-duration-base)] hover:bg-[var(--z-state-hover)] hover:text-fg",
+            "absolute inset-y-0 right-0 flex items-center justify-center text-fg-dim",
+            compact ? "w-8" : "w-10",
+            "transition-colors duration-[var(--z-duration-base)] hover:text-fg",
             focusRing,
           )}
         >
-          <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-            <path
-              d="M4 4l8 8M12 4l-8 8"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
+          <span className="flex size-7 items-center justify-center rounded-full hover:bg-[var(--z-state-hover)]">
+            <FieldIconClear />
+          </span>
         </button>
       ) : null}
     </div>

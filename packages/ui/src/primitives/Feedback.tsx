@@ -68,9 +68,9 @@ export function ScrollArea({
       </ScrollAreaPrimitive.Viewport>
       <ScrollAreaPrimitive.Scrollbar
         orientation="vertical"
-        className="flex touch-none select-none p-0.5 transition-colors"
+        className="flex w-1 touch-none select-none p-0 transition-colors"
       >
-        <ScrollAreaPrimitive.Thumb className="relative flex-1 rounded-full bg-[var(--z-glass-2)]" />
+        <ScrollAreaPrimitive.Thumb className="relative flex-1 rounded-full bg-[color-mix(in_srgb,var(--z-fg)_28%,transparent)] hover:bg-[color-mix(in_srgb,var(--z-fg)_44%,transparent)]" />
       </ScrollAreaPrimitive.Scrollbar>
     </ScrollAreaPrimitive.Root>
   );
@@ -86,7 +86,7 @@ export function Pill({ className, tone = "neutral", ...props }: PillProps) {
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider",
         tone === "neutral" && "bg-[var(--z-glass)] text-fg-muted",
-        tone === "accent" && "bg-accent text-accent-fg",
+        tone === "accent" && "bg-[var(--z-button)] text-[var(--z-button-fg)]",
         tone === "danger" &&
           "bg-[var(--z-danger-fill)] text-[var(--z-danger)]",
         tone === "success" &&
@@ -104,6 +104,8 @@ export interface CalloutProps extends HTMLAttributes<HTMLDivElement> {
   /** Same vocabulary as {@link Pill}, so one tone name means one thing anywhere. */
   tone?: "info" | "danger" | "warning" | "neutral" | "success";
   title?: string;
+  /** Tighter type and padding for status notes under a tracker. */
+  compact?: boolean;
 }
 
 function CalloutIcon({ tone }: { tone: NonNullable<CalloutProps["tone"]> }) {
@@ -179,6 +181,7 @@ export function Callout({
   className,
   tone = "info",
   title,
+  compact = false,
   children,
   ...props
 }: CalloutProps) {
@@ -186,7 +189,8 @@ export function Callout({
     <div
       role={tone === "danger" || tone === "warning" ? "status" : undefined}
       className={cn(
-        "flex gap-2.5 rounded-[14px] p-3",
+        "flex",
+        compact ? "gap-2 rounded-[11px] px-2.5 py-2" : "gap-2.5 rounded-[14px] p-3",
         tone === "info" && "bg-[image:var(--z-hero-soft-gradient)]",
         tone === "danger" && "bg-[var(--z-danger-fill)]",
         tone === "warning" && "bg-[var(--z-warning-fill)]",
@@ -201,7 +205,9 @@ export function Callout({
         {title ? (
           <div
             className={cn(
-              "text-[length:var(--z-type-row)] font-medium leading-snug",
+              compact
+                ? "text-[11px] font-medium leading-snug"
+                : "text-[length:var(--z-type-row)] font-medium leading-snug",
               tone === "warning" && "text-[var(--z-warning-fg)]",
               tone === "danger" && "text-[var(--z-danger-fg)]",
               tone === "success" && "text-[var(--z-success-fg)]",
@@ -213,8 +219,11 @@ export function Callout({
         ) : null}
         <div
           className={cn(
-            "text-[length:var(--z-type-body)] leading-relaxed",
-            title ? "mt-1" : null,
+            "break-words [overflow-wrap:anywhere]",
+            compact
+              ? "text-[10.5px] leading-snug"
+              : "text-[length:var(--z-type-body)] leading-relaxed",
+            title ? (compact ? "mt-0.5" : "mt-1") : null,
             tone === "warning" && "text-[color-mix(in_srgb,var(--z-warning-fg)_82%,transparent)]",
             tone === "danger" && "text-[var(--z-danger-fg)]",
             (tone === "info" || tone === "neutral") && "text-fg-muted",
@@ -298,12 +307,14 @@ export function KeyValueRow({
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-3 font-mono text-[length:var(--z-type-meta)]",
+        "flex min-w-0 items-baseline justify-between gap-3 font-mono text-[length:var(--z-type-meta)]",
         className,
       )}
     >
-      <span className="text-fg-muted">{label}</span>
-      <span className={cn("tabular-nums text-fg", accent && "text-fg")}>{value}</span>
+      <span className="shrink-0 text-fg-muted">{label}</span>
+      <span className={cn("min-w-0 break-all text-right tabular-nums text-fg [overflow-wrap:anywhere]", accent && "text-fg")}>
+        {value}
+      </span>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import type { HTMLAttributes, ReactNode } from "react";
+import { useState, type HTMLAttributes, type ReactNode } from "react";
 import { cn, focusRing, interactiveQuiet, interactiveSurface, amountInlineClass } from "../lib/cn";
 import { Avatar } from "../primitives/WalletAvatar";
 import {
@@ -77,26 +77,121 @@ export function Amount({
   );
 }
 
+function VerifiedSeal({ label, size }: { label: string; size: number }) {
+  return (
+    <span
+      title={label}
+      aria-label={label}
+      className="pointer-events-none absolute bottom-0 right-0 overflow-hidden rounded-full leading-none"
+      style={{ width: size, height: size }}
+    >
+      <svg viewBox="0 0 24 24" className="block size-full" aria-hidden="true">
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          fill="var(--z-button)"
+          stroke="var(--z-surface)"
+          strokeWidth="1.75"
+        />
+        <path
+          d="M7.6 12.3 L10.6 15.2 L16.4 8.8"
+          fill="none"
+          stroke="var(--z-button-fg)"
+          strokeWidth="2.35"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
+function tokenLetters(symbol: string): string {
+  const compact = symbol.replace(/[^a-zA-Z0-9]/g, "");
+  return (compact.slice(0, 2) || "?").toUpperCase();
+}
+
+function TokenPlate({
+  src,
+  symbol,
+  size,
+}: {
+  src?: string;
+  symbol: string;
+  size: number;
+}) {
+  const [failed, setFailed] = useState(false);
+  const showImage = Boolean(src) && !failed;
+  return (
+    <span
+      className="flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--z-glass-2)] leading-none"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={symbol}
+    >
+      {showImage ? (
+        <img
+          src={src}
+          alt=""
+          className="block size-full object-cover"
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span
+          className="select-none font-semibold leading-none tracking-tight text-fg"
+          style={{ fontSize: Math.max(9, Math.round(size * 0.34)) }}
+        >
+          {tokenLetters(symbol)}
+        </span>
+      )}
+    </span>
+  );
+}
+
 export function TokenLogo({
   src,
   symbol,
   size = 32,
   verified,
+  verifiedLabel = "Verified",
+  chainSrc,
+  chainLabel,
   className,
 }: {
   src?: string;
   symbol: string;
   size?: number;
   verified?: boolean;
+  /** Accessible name for the check mark. */
+  verifiedLabel?: string;
+  /** Holding-chain mark, used when the token is not native to this row. */
+  chainSrc?: string;
+  chainLabel?: string;
   className?: string;
 }) {
+  const badge = Math.min(13, Math.max(9, Math.round(size * 0.38)));
+  const chain = Math.min(13, Math.max(10, Math.round(size * 0.38)));
+  const showChain = Boolean(chainSrc || chainLabel);
   return (
-    <span className={cn("relative inline-flex shrink-0", className)}>
-      <Avatar src={src} alt={symbol} fallback={symbol} size={size} />
-      {verified ? (
-        <span className="absolute -bottom-0.5 -right-0.5 flex size-[15px] items-center justify-center rounded-full border-2 border-surface bg-[var(--z-info)] text-[8px] text-bg">
-          ✓
+    <span
+      className={cn("relative flex shrink-0 leading-none", className)}
+      style={{ width: size, height: size }}
+    >
+      <TokenPlate src={src} symbol={symbol} size={size} />
+      {showChain ? (
+        <span
+          className="absolute bottom-0 right-0 flex overflow-hidden rounded-full bg-[var(--z-bg)] leading-none ring-2 ring-[var(--z-bg)]"
+          style={{ width: chain, height: chain }}
+          title={chainLabel}
+        >
+          <TokenPlate src={chainSrc} symbol={chainLabel ?? symbol} size={chain} />
         </span>
+      ) : verified ? (
+        <VerifiedSeal label={verifiedLabel} size={badge} />
       ) : null}
     </span>
   );

@@ -98,7 +98,7 @@ export function MnemonicInput({
           Boolean(wordlist) && word.length > 0 && !wordlist!.has(word);
         return (
           <li key={i} className="relative">
-            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 font-mono text-[9.5px] text-fg-faint">
+            <span className="pointer-events-none absolute inset-y-0 left-0 flex w-8 items-center justify-center font-mono text-[9.5px] text-fg-faint">
               {i + 1}
             </span>
             <input

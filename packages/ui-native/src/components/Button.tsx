@@ -41,7 +41,7 @@ export function Button({
       ]}
       {...rest}
     >
-      <RNText style={[styles.label, variant === "ghost" && styles.ghostLabel]}>
+      <RNText style={[styles.label, variant !== "primary" && styles.onSurfaceLabel]}>
         {children}
       </RNText>
     </Pressable>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
   },
-  primary: { backgroundColor: t.colors.cobalt },
+  primary: { backgroundColor: "#A81818" },
   secondary: {
     backgroundColor: "transparent",
     borderWidth: 1,
@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.45 },
   pressed: { opacity: 0.88 },
   label: {
-    color: t.colors.white,
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
     letterSpacing: -0.3,
   },
-  ghostLabel: { color: t.colors.cobaltSoft },
+  onSurfaceLabel: { color: t.colors.ink },
 });

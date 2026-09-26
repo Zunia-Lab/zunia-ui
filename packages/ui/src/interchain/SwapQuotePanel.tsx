@@ -9,7 +9,6 @@ import {
   checkSlippage,
   priceImpactSeverity,
   priceImpactTone,
-  sourceGasNote,
   toneStyle,
   type PriceImpactThresholds,
 } from "./interchain";
@@ -43,14 +42,9 @@ export interface SwapQuoteView {
 export interface SwapQuotePanelProps {
   /** `null` while nothing has been quoted yet. */
   readonly quote: SwapQuoteView | null;
-  /**
-   * Chain the user signs and pays gas on. Required: the panel's job includes
-   * saying that no account is needed at the swap venue.
-   */
-  readonly gasChainName: string;
-  /** Venue running the swap, e.g. `"Osmosis"`. */
+  /** Kept for callers; the panel no longer explains source-chain gas. */
+  readonly gasChainName?: string;
   readonly swapVenueName?: string;
-  /** Formatted source-chain fee, e.g. `"≈ 0.0021 SAFRO"`. Omitted if unknown. */
   readonly gasFeeLabel?: string | null;
   readonly slippagePercent: number;
   /** Omit to render the tolerance read-only. */
@@ -62,6 +56,11 @@ export interface SwapQuotePanelProps {
   readonly error?: string | null;
   readonly onRetry?: () => void;
   readonly compact?: boolean;
+  /**
+   * `simple` is rate, floor and a high-impact warning only.
+   * `expert` adds pool fee, pools and the slippage editor.
+   */
+  readonly variant?: "simple" | "expert";
   readonly className?: string;
   readonly title?: string | null;
   /** Slot under the panel, e.g. the confirm button. */
@@ -116,20 +115,13 @@ function QuoteRow({
 }
 
 /**
- * Rate, minimum received, price impact, pool fee, slippage, and who pays gas.
+ * Rate, minimum received, price impact, pool fee, and slippage.
  *
- * Two things here are load-bearing rather than decorative. Price impact above
- * the threshold is rendered as a filled, bordered, captioned block, because it
- * is the number that decides whether a swap is a good idea and a muted grey row
- * is how it gets skipped. And the gas line is always present, because "do I
- * need OSMO for this?" is the question this flow generates, and the answer is
- * no: the contract call happens inside packet processing and a relayer pays.
+ * Price impact above the threshold is a filled, bordered block: it is the
+ * number that decides whether a swap is a good idea.
  */
 export function SwapQuotePanel({
   quote,
-  gasChainName,
-  swapVenueName,
-  gasFeeLabel,
   slippagePercent,
   onSlippageChange,
   slippagePresets = DEFAULT_PRESETS,
@@ -138,10 +130,12 @@ export function SwapQuotePanel({
   error,
   onRetry,
   compact = false,
+  variant = "expert",
   className,
   title = "Quote",
   footer,
 }: SwapQuotePanelProps) {
+  const simple = variant === "simple";
   const customId = useId();
   const slippage = checkSlippage(slippagePercent);
   const slippageTone = toneStyle(slippage.tone);
@@ -212,22 +206,6 @@ export function SwapQuotePanel({
     </fieldset>
   );
 
-  const gasBlock = (
-    <div className="rounded-[14px] bg-[var(--z-glass)] p-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider text-fg-muted">
-          Network fee
-        </span>
-        <span className="font-mono text-[length:var(--z-type-meta)] tabular-nums text-fg">
-          {gasFeeLabel ?? "estimated at signing"}
-        </span>
-      </div>
-      <p className="m-0 mt-1.5 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
-        {sourceGasNote(gasChainName, { venueName: swapVenueName })}
-      </p>
-    </div>
-  );
-
   if (error) {
     return (
       <div className={cn("flex flex-col gap-3", className)}>
@@ -247,8 +225,7 @@ export function SwapQuotePanel({
             </>
           ) : null}
         </Callout>
-        {slippageControl}
-        {gasBlock}
+        {simple ? null : slippageControl}
         {footer}
       </div>
     );
@@ -265,7 +242,7 @@ export function SwapQuotePanel({
         >
           {loading ? <span className="sr-only">Pricing swap</span> : null}
           {loading ? (
-            [0, 1, 2, 3].map((i) => (
+            (simple ? [0, 1] : [0, 1, 2, 3]).map((i) => (
               <div key={i} className="flex items-center justify-between gap-3">
                 <Skeleton className="h-2 w-20" />
                 <Skeleton className="h-2 w-24" />
@@ -273,8 +250,9 @@ export function SwapQuotePanel({
             ))
           ) : (
             <p className="m-0 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
-              Enter an amount to get a quote. Nothing is priced until the venue
-              answers.
+              {simple
+                ? "Enter an amount to see what you get."
+                : "Enter an amount to get a quote. Nothing is priced until the venue answers."}
             </p>
           )}
         </div>
@@ -314,11 +292,13 @@ export function SwapQuotePanel({
             valueClassName={quote.minReceived ? undefined : "text-fg-dim"}
           />
 
-          <QuoteRow
-            label="Pool fee"
-            value={feeText ?? "not reported"}
-            valueClassName={feeText ? undefined : "text-fg-dim"}
-          />
+          {simple ? null : (
+            <QuoteRow
+              label="Pool fee"
+              value={feeText ?? "not reported"}
+              valueClassName={feeText ? undefined : "text-fg-dim"}
+            />
+          )}
 
           {/* Price impact is the number that decides whether this trade is sane,
               so above the threshold it stops being a row and becomes a block. */}
@@ -355,7 +335,7 @@ export function SwapQuotePanel({
             </div>
           )}
 
-          {quote.route && quote.route.length > 0 ? (
+          {!simple && quote.route && quote.route.length > 0 ? (
             <div className="flex min-w-0 flex-wrap items-center gap-1.5 border-t border-[var(--z-line)] pt-2.5">
               <span className="font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider text-fg-muted">
                 Pools
@@ -374,8 +354,7 @@ export function SwapQuotePanel({
         </div>
       )}
 
-      {slippageControl}
-      {gasBlock}
+      {simple ? null : slippageControl}
       {footer}
     </div>
   );

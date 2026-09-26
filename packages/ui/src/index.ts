@@ -116,6 +116,11 @@ export {
   readValidatorLogoCache,
   writeValidatorLogoCache,
   clearValidatorLogoCache,
+  resolveKeybaseLogoUrl,
+  fetchValidatorAvatar,
+  fetchValidatorAvatars,
+  peekCachedAvatarUrl,
+  isValidKeybaseIdentity,
 } from "./wallet/validatorLogoResolve";
 export type {
   ValidatorLogoInput,

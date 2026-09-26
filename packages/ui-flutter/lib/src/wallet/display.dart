@@ -407,7 +407,7 @@ class ZuniaQuickAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
-    final fg = primary ? s.accentFg : s.fg;
+    final fg = primary ? const Color(0xFFFFFFFF) : s.fg;
     return Expanded(
       child: Material(
         color: Colors.transparent,
@@ -417,7 +417,18 @@ class ZuniaQuickAction extends StatelessWidget {
           child: Ink(
             height: 72,
             decoration: BoxDecoration(
-              gradient: primary ? s.accentGradient : null,
+              gradient: primary
+                  ? const LinearGradient(
+                      begin: Alignment(-0.866, -0.5),
+                      end: Alignment(0.866, 0.5),
+                      colors: [
+                        Color(0xFF9A1016),
+                        Color(0xFFB42218),
+                        Color(0xFFA43216),
+                      ],
+                      stops: [0, 0.52, 1],
+                    )
+                  : null,
               color: primary ? null : s.glass,
               borderRadius: BorderRadius.circular(16),
               boxShadow: primary

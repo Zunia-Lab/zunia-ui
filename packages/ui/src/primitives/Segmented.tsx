@@ -48,8 +48,8 @@ export function Segmented<T extends string>({
                 ? "px-3 py-1.5 text-[length:var(--z-type-micro)]"
                 : "px-4 py-2 text-[length:var(--z-type-meta)]",
               selected
-                ? "bg-accent text-[var(--z-accent-fg)] shadow-[0_1px_0_color-mix(in_srgb,var(--z-accent-fg)_20%,transparent)_inset]"
-                : "text-fg-muted hover:bg-[var(--z-state-hover)] hover:text-fg active:bg-[var(--z-state-press)]",
+                ? "bg-[image:var(--z-button-gradient)] text-[var(--z-button-fg)] shadow-[0_1px_0_color-mix(in_srgb,var(--z-button-fg)_24%,transparent)_inset]"
+                : "text-fg hover:bg-[var(--z-state-hover)] active:bg-[var(--z-state-press)]",
               focusRing,
             )}
           >

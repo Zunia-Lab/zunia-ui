@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../primitives/switch.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
+import 'display.dart';
 
 /// Progress rail plus "Step 2 of 4 · Verify" caption.
 class ZuniaStepProgress extends StatelessWidget {
@@ -100,6 +101,7 @@ class ZuniaNetworkOptionCard extends StatelessWidget {
     this.symbol,
     this.iconUrl,
     this.testnet = false,
+    this.verified = false,
     this.control = ZuniaNetworkControl.check,
   });
 
@@ -110,6 +112,9 @@ class ZuniaNetworkOptionCard extends StatelessWidget {
   final String? symbol;
   final String? iconUrl;
   final bool testnet;
+
+  /// Official cosmos/chain-registry membership.
+  final bool verified;
 
   /// Onboarding picks several chains at once, so it reads as a checklist.
   /// Post-setup management is one switch per chain.
@@ -131,7 +136,13 @@ class ZuniaNetworkOptionCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
-              _Logo(name: name, iconUrl: iconUrl, selected: selected),
+              ZuniaTokenLogo(
+                symbol: name,
+                iconUrl: iconUrl,
+                size: 36,
+                verified: verified,
+                selected: selected,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -182,43 +193,6 @@ class ZuniaNetworkOptionCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Logo extends StatelessWidget {
-  const _Logo({required this.name, required this.selected, this.iconUrl});
-
-  final String name;
-  final bool selected;
-  final String? iconUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = ZuniaSemanticsExt.of(context);
-    final fallback = Text(
-      name.length >= 2 ? name.substring(0, 2).toUpperCase() : name.toUpperCase(),
-      style: zuniaMono(fontSize: 11, color: s.fgMuted),
-    );
-    return Container(
-      width: 38,
-      height: 38,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: s.stateHover,
-        border: Border.all(color: selected ? s.accent : s.line),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: iconUrl == null
-          ? fallback
-          : Image.network(
-              iconUrl!,
-              fit: BoxFit.cover,
-              width: 38,
-              height: 38,
-              errorBuilder: (_, __, ___) => fallback,
-            ),
     );
   }
 }

@@ -308,7 +308,7 @@ export function PacketTracker({
           >
             {summary.title}
           </div>
-          <p className="m-0 mt-1 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
+          <p className="m-0 mt-1 break-words text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted [overflow-wrap:anywhere]">
             {summary.detail}
           </p>
           {summary.actionRequired ? (
@@ -400,12 +400,12 @@ export function PacketTracker({
                     </span>
                   </div>
 
-                  <p className="m-0 mt-1 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
+                  <p className="m-0 mt-1 break-words text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted [overflow-wrap:anywhere]">
                     {presentation.detail}
                   </p>
 
                   {hop.error ? (
-                    <p className="m-0 mt-1 font-mono text-[length:var(--z-type-micro)] leading-relaxed text-[var(--z-danger-fg)]">
+                    <p className="m-0 mt-1 break-words font-mono text-[length:var(--z-type-micro)] leading-relaxed text-[var(--z-danger-fg)] [overflow-wrap:anywhere]">
                       {hop.error}
                     </p>
                   ) : null}

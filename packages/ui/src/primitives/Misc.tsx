@@ -62,19 +62,23 @@ export function Td({ className, ...props }: HTMLAttributes<HTMLTableCellElement>
 }
 
 const TOAST_TONES = {
-  success: { icon: "✓", badge: "bg-accent text-accent-fg" },
+  success: { icon: "✓", badge: "bg-[var(--z-button)] text-[var(--z-button-fg)]" },
   danger: { icon: "!", badge: "bg-[var(--z-danger-fill)] text-[var(--z-danger)]" },
+  warning: { icon: "!", badge: "bg-[var(--z-warning-fill)] text-[var(--z-warning)]" },
   neutral: { icon: "i", badge: "bg-[var(--z-glass-2)] text-fg-muted" },
 } as const;
 
 export function Toast({
   title,
   meta,
+  detail,
   tone = "success",
   className,
 }: {
   title: string;
   meta?: string;
+  /** Second line, for a short note that should not stay on the page. */
+  detail?: string;
   tone?: keyof typeof TOAST_TONES;
   className?: string;
 }) {
@@ -83,7 +87,7 @@ export function Toast({
     <div
       role={tone === "danger" ? "alert" : "status"}
       className={cn(
-        "flex items-center gap-2.5 rounded-[14px] border border-[var(--z-line-strong)] bg-surface px-3 py-3",
+        "flex items-center gap-2.5 rounded-[14px] border border-[var(--z-line-strong)] bg-[var(--z-surface-raised)] px-3 py-3",
         "shadow-[0_16px_34px_var(--z-shadow)]",
         className,
       )}
@@ -97,10 +101,19 @@ export function Toast({
       >
         {look.icon}
       </span>
-      <span className="flex-1 text-[12px] font-medium text-fg">{title}</span>
-      {meta ? (
-        <span className="font-mono text-[10px] text-fg-dim">{meta}</span>
-      ) : null}
+      <span className="min-w-0 flex-1">
+        <span className="flex items-baseline gap-2">
+          <span className="text-[12px] font-medium text-fg">{title}</span>
+          {meta ? (
+            <span className="font-mono text-[10px] text-fg-dim">{meta}</span>
+          ) : null}
+        </span>
+        {detail ? (
+          <span className="mt-0.5 block text-[11px] leading-snug text-fg-muted">
+            {detail}
+          </span>
+        ) : null}
+      </span>
     </div>
   );
 }

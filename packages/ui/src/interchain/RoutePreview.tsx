@@ -8,7 +8,6 @@ import {
   channelTrust,
   formatApproxDuration,
   routeHopKindLabel,
-  sourceGasNote,
   toneStyle,
   type ChannelSource,
   type ChannelState,
@@ -97,8 +96,6 @@ export function RoutePreview({
   warnings,
   requiresPfm,
   requiresIbcHooks,
-  gasChainName,
-  swapVenueName,
   loading = false,
   error,
   onRetry,
@@ -176,7 +173,7 @@ export function RoutePreview({
   const last = hops[hops.length - 1];
 
   return (
-    <div className={cn("flex min-w-0 flex-col gap-3", className)}>
+    <div className={cn("flex min-w-0 flex-col", compact ? "gap-1.5" : "gap-3", className)}>
       {title || duration ? (
         <div className="flex items-center justify-between gap-3">
           {title ? <SectionLabel>{title}</SectionLabel> : <span />}
@@ -188,8 +185,8 @@ export function RoutePreview({
         </div>
       ) : null}
 
-      {/* Endpoints first: most users only want to know where it starts and ends. */}
-      {first && last ? (
+      {/* Full layout keeps an endpoint strip. Compact hops already name both ends. */}
+      {first && last && !compact ? (
         <div className="flex items-center gap-2 rounded-[14px] bg-[var(--z-glass)] px-3 py-2.5">
           <Avatar
             src={first.chainIconUrl}
@@ -220,21 +217,32 @@ export function RoutePreview({
       ) : null}
 
       {loudCount > 0 ? (
-        <Callout
-          tone="warning"
-          title={
-            loudCount === 1
-              ? "1 channel on this route is not verified"
-              : `${loudCount} channels on this route are not verified`
-          }
-        >
-          Sending over the wrong channel does not fail. It delivers a token the
-          destination chain does not recognise, and that cannot be undone by
-          retrying. Verify each highlighted hop before you sign.
-        </Callout>
+        compact ? (
+          <div
+            role="status"
+            className="rounded-[10px] bg-[var(--z-warning-fill)] px-2.5 py-1.5 text-[length:var(--z-type-meta)] leading-snug text-[var(--z-warning-fg)]"
+          >
+            {loudCount === 1
+              ? "1 channel is not verified. A wrong hop cannot be undone."
+              : `${loudCount} channels are not verified. A wrong hop cannot be undone.`}
+          </div>
+        ) : (
+          <Callout
+            tone="warning"
+            title={
+              loudCount === 1
+                ? "1 channel on this route is not verified"
+                : `${loudCount} channels on this route are not verified`
+            }
+          >
+            Sending over the wrong channel does not fail. It delivers a token the
+            destination chain does not recognise, and that cannot be undone by
+            retrying. Verify each highlighted hop before you sign.
+          </Callout>
+        )
       ) : null}
 
-      <ol className="flex min-w-0 flex-col gap-2">
+      <ol className={cn("flex min-w-0 flex-col", compact ? "gap-1.5" : "gap-2")}>
         {hops.map((hop, i) => {
           const trust = trusts[i]!;
           const tone = toneStyle(trust.tone);
@@ -250,8 +258,8 @@ export function RoutePreview({
             <li
               key={`${hop.chainId}-${hop.channelId}-${i}`}
               className={cn(
-                "min-w-0 rounded-[14px] border",
-                compact ? "p-2.5" : "p-3",
+                "min-w-0 border",
+                compact ? "rounded-[10px] px-2 py-1.5" : "rounded-[14px] p-3",
                 trust.loud
                   ? "border-[color:var(--loud-border)] bg-[color:var(--loud-bg)]"
                   : "border-[var(--z-line)] bg-[var(--z-glass)]",
@@ -265,9 +273,12 @@ export function RoutePreview({
                   : undefined
               }
             >
-              <div className="flex min-w-0 items-start gap-2.5">
+              <div className={cn("flex min-w-0", compact ? "items-center gap-2" : "items-start gap-2.5")}>
                 <span
-                  className="mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full border font-mono text-[9px] leading-none"
+                  className={cn(
+                    "flex shrink-0 items-center justify-center rounded-full border font-mono leading-none",
+                    compact ? "size-4 text-[8px]" : "mt-0.5 size-[18px] text-[9px]",
+                  )}
                   style={{
                     color: tone.fg,
                     background: tone.bg,
@@ -279,8 +290,8 @@ export function RoutePreview({
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
-                    <Avatar src={hop.chainIconUrl} fallback={from} size={16} />
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                    <Avatar src={hop.chainIconUrl} fallback={from} size={compact ? 14 : 16} />
                     <span className="truncate text-[length:var(--z-type-row)] font-medium text-fg">
                       {from}
                     </span>
@@ -290,7 +301,7 @@ export function RoutePreview({
                     <Avatar
                       src={hop.counterpartyChainIconUrl}
                       fallback={to}
-                      size={16}
+                      size={compact ? 14 : 16}
                     />
                     <span
                       className={cn(
@@ -302,13 +313,15 @@ export function RoutePreview({
                     </span>
                   </div>
 
-                  <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5">
-                    <span className="font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider text-fg-muted">
-                      {routeHopKindLabel(kind)}
-                    </span>
+                  <div className={cn("flex min-w-0 flex-wrap items-center gap-1", compact ? "mt-0.5" : "mt-1.5 gap-1.5")}>
+                    {compact ? null : (
+                      <span className="font-mono text-[length:var(--z-type-micro)] uppercase tracking-wider text-fg-muted">
+                        {routeHopKindLabel(kind)}
+                      </span>
+                    )}
                     {hop.channelId ? (
                       <code className="rounded-[6px] bg-[var(--z-glass-2)] px-1.5 py-0.5 font-mono text-[length:var(--z-type-micro)] text-fg">
-                        {port}/{hop.channelId}
+                        {compact ? hop.channelId : `${port}/${hop.channelId}`}
                       </code>
                     ) : (
                       <span className="font-mono text-[length:var(--z-type-micro)] text-fg-dim">
@@ -328,12 +341,14 @@ export function RoutePreview({
                       </span>
                       {trust.label}
                     </span>
-                    <span className="font-mono text-[length:var(--z-type-micro)] text-fg-dim">
-                      {trust.sourceLabel}
-                    </span>
+                    {compact ? null : (
+                      <span className="font-mono text-[length:var(--z-type-micro)] text-fg-dim">
+                        {trust.sourceLabel}
+                      </span>
+                    )}
                   </div>
 
-                  {trust.loud ? (
+                  {trust.loud && !compact ? (
                     <p className="mt-1.5 m-0 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
                       {trust.detail}
                     </p>
@@ -361,26 +376,26 @@ export function RoutePreview({
       ) : null}
 
       {warnings && warnings.length > 0 ? (
-        <ul className="flex flex-col gap-1.5">
+        <ul className={cn("flex flex-col", compact ? "gap-1" : "gap-1.5")}>
           {warnings.map((w) => (
             <li
               key={w}
-              className="flex gap-2 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted"
+              className={cn(
+                "flex gap-2 text-[length:var(--z-type-meta)] text-fg-muted",
+                compact ? "leading-snug" : "leading-relaxed",
+              )}
             >
               <span
-                className="mt-[7px] size-1 shrink-0 rounded-full bg-[var(--z-warning)]"
+                className={cn(
+                  "shrink-0 rounded-full bg-[var(--z-warning)]",
+                  compact ? "mt-[5px] size-1" : "mt-[7px] size-1",
+                )}
                 aria-hidden
               />
               {w}
             </li>
           ))}
         </ul>
-      ) : null}
-
-      {gasChainName ? (
-        <p className="m-0 text-[length:var(--z-type-meta)] leading-relaxed text-fg-muted">
-          {sourceGasNote(gasChainName, { venueName: swapVenueName })}
-        </p>
       ) : null}
 
       {footer}

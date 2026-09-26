@@ -74,6 +74,11 @@ export const status = {
 export const gradients = {
   /** Primary action fill. */
   accent: "linear-gradient(120deg, #FF1B0C 0%, #FF6A10 50%, #FFC414 100%)",
+  /**
+   * Label-bearing controls. Deeper than `accent` so white text clears AA on
+   * every stop (8.54 / 6.60 / 6.89:1).
+   */
+  button: "linear-gradient(120deg, #9A1016 0%, #B42218 52%, #A43216 100%)",
   /** Glow that sits under a primary action. */
   accentGlow: "0 12px 28px rgba(255, 45, 31, 0.28)",
   /** Default card / panel wash. */
@@ -181,6 +186,15 @@ export type SemanticTheme = {
   accentFg: string;
   accentGradient: string;
   accentGlow: string;
+  /**
+   * Primary control fill. The brand ramp is the product accent, and it is too
+   * bright to carry a label: ink is 5.10:1 on the red stop and reads as a
+   * stain, white is 1.60:1 on the gold stop. This deeper crimson holds white
+   * at 8.54 / 6.60 / 6.89:1 across the gradient.
+   */
+  button: string;
+  buttonFg: string;
+  buttonGradient: string;
   /** Card / panel wash. */
   surfaceGradient: string;
   surfaceRaisedGradient: string;
@@ -246,6 +260,9 @@ export const themes = {
     accentFg: brand.void,
     accentGradient: gradients.accent,
     accentGlow: gradients.accentGlow,
+    button: "#A81818",
+    buttonFg: "#FFFFFF",
+    buttonGradient: gradients.button,
     surfaceGradient: gradients.surfaceDark,
     surfaceRaisedGradient: gradients.surfaceRaisedDark,
     heroGradient: gradients.hero,
@@ -302,6 +319,9 @@ export const themes = {
     accentFg: brand.void,
     accentGradient: gradients.accent,
     accentGlow: gradients.accentGlow,
+    button: "#A81818",
+    buttonFg: "#FFFFFF",
+    buttonGradient: gradients.button,
     surfaceGradient: gradients.surfaceLight,
     surfaceRaisedGradient: gradients.surfaceRaisedLight,
     heroGradient:

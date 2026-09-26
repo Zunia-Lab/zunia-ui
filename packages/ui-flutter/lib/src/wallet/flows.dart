@@ -606,7 +606,14 @@ class ZuniaNetworkPickerSheet extends StatefulWidget {
     this.initialSearch = '',
   });
 
-  final List<({String chainId, String name, String? symbol})> networks;
+  final List<
+      ({
+        String chainId,
+        String name,
+        String? symbol,
+        String? iconUrl,
+        bool verified,
+      })> networks;
   final String? activeChainId;
   final ValueChanged<String> onSelect;
   final String initialSearch;
@@ -685,6 +692,13 @@ class _ZuniaNetworkPickerSheetState extends State<ZuniaNetworkPickerSheet> {
                     ),
                     child: Row(
                       children: [
+                        ZuniaTokenLogo(
+                          symbol: n.name,
+                          iconUrl: n.iconUrl,
+                          size: 26,
+                          verified: n.verified,
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

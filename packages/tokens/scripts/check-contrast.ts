@@ -196,9 +196,12 @@ const CHECKS: Check[] = [
     min: AA_TEXT,
     base: "surfaceRaised",
   },
-  // Primary CTA. The flat token is the TabBar active tab; the gradient is Button.
+  // Brand ramp (icons, checks, marks). Ink, because the ramp is too bright for white.
   { name: "accentFg on accent", fg: "accentFg", bg: "accent", min: AA_TEXT },
   { name: "accentFg on accentGradient", fg: "accentFg", bg: "accentGradient", min: AA_TEXT },
+  // Primary buttons. White on a deeper crimson, including every gradient stop.
+  { name: "buttonFg on button", fg: "buttonFg", bg: "button", min: AA_TEXT },
+  { name: "buttonFg on buttonGradient", fg: "buttonFg", bg: "buttonGradient", min: AA_TEXT },
   // Focus indicator — non-text UI, and it must survive on every surface.
   ...SURFACES.map((surface): Check => ({
     name: `focusRing on ${surface}`,

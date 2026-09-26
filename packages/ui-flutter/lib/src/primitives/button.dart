@@ -49,11 +49,17 @@ class ZuniaButton extends StatelessWidget {
 
     switch (variant) {
       case ZuniaButtonVariant.primary:
-        // The accent ramp plus its bloom is the product's primary action.
-        bg = s.accent;
-        fg = s.accentFg;
+        // Deeper than the brand ramp so the label can be white. White on
+        // #9A1016 / #B42218 / #A43216 is 8.54 / 6.60 / 6.89:1.
+        bg = const Color(0xFFA81818);
+        fg = const Color(0xFFFFFFFF);
         side = null;
-        gradient = s.accentGradient;
+        gradient = const LinearGradient(
+          begin: Alignment(-0.866, -0.5),
+          end: Alignment(0.866, 0.5),
+          colors: [Color(0xFF9A1016), Color(0xFFB42218), Color(0xFFA43216)],
+          stops: [0, 0.52, 1],
+        );
       case ZuniaButtonVariant.secondary:
         bg = Colors.transparent;
         fg = s.fg;
@@ -61,7 +67,7 @@ class ZuniaButton extends StatelessWidget {
         gradient = s.surfaceRaisedGradient;
       case ZuniaButtonVariant.ghost:
         bg = Colors.transparent;
-        fg = s.fgMuted;
+        fg = s.fg;
         side = null;
       case ZuniaButtonVariant.danger:
         bg = Colors.transparent;
@@ -113,7 +119,7 @@ class ZuniaButton extends StatelessWidget {
                   label,
                   style: zuniaSans(
                     fontSize: size == ZuniaButtonSize.sm ? 11.5 : 13,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: fg,
                   ),
                 ),

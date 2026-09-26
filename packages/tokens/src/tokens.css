@@ -142,11 +142,18 @@
   --z-fg-dim: #666666;
   --z-fg-faint: #9a9a9a;
   --z-accent: #ff1b0c;
-  /* Ink on the ramp. White was 3.88 / 2.87 / 1.60:1 against the gradient's
-     three stops; #0b0a09 is 5.10 / 6.90 / 12.39:1 against the same stops. */
+  /* Ink on the brand ramp (icons, checks, marks). White was 3.88 / 2.87 /
+     1.60:1 against the gradient's three stops; #0b0a09 is 5.10 / 6.90 /
+     12.39:1 against the same stops. */
   --z-accent-fg: #0b0a09;
   --z-accent-gradient: linear-gradient(120deg, #ff1b0c 0%, #ff6a10 50%, #ffc414 100%);
   --z-accent-glow: 0 12px 28px rgba(255, 45, 31, 0.28);
+  /* Primary buttons. The brand ramp is too bright for a word: ink stains into
+     the red, and white disappears on the gold. White on this crimson is
+     8.54 / 6.60 / 6.89:1 across the three stops, 7.48:1 on the solid. */
+  --z-button: #a81818;
+  --z-button-fg: #ffffff;
+  --z-button-gradient: linear-gradient(120deg, #9a1016 0%, #b42218 52%, #a43216 100%);
   /* Solid paper cards */
   --z-surface-gradient: linear-gradient(180deg, #ffffff 0%, #faf9f7 100%);
   --z-surface-raised-gradient: linear-gradient(180deg, #ffffff 0%, #f1f0ee 100%);

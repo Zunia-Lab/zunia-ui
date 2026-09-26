@@ -275,7 +275,8 @@ export type PacketFailureKind =
   | "timeout"
   | "ack-error"
   | "stalled"
-  | "swap-delivery-failed";
+  | "swap-delivery-failed"
+  | "source-failed";
 
 export interface PacketStatusPresentation {
   readonly status: PacketHopStatus;
@@ -414,6 +415,7 @@ export type PacketFundsState =
   | "stalled"
   | "returned"
   | "recoverable"
+  | "failed"
   | "unknown";
 
 export interface PacketFundsSummary {
@@ -460,6 +462,16 @@ export function packetFundsSummary(
 ): PacketFundsSummary {
   // Recovery outranks everything: it is the only outcome that stops without the
   // user, so it must not be buried under an earlier hop's happy status.
+  if (options?.failure === "source-failed") {
+    return {
+      state: "failed",
+      title: "Transaction failed",
+      detail: "The source chain rejected this transaction. The transfer never left.",
+      tone: "danger",
+      actionRequired: false,
+    };
+  }
+
   if (options?.failure === "swap-delivery-failed") {
     return {
       state: "recoverable",

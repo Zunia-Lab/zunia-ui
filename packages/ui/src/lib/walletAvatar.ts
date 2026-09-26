@@ -32,6 +32,10 @@ export const AVATAR_PALETTES: readonly AvatarPalette[] = [
   { light: "#86EFAC", mid: "#16A34A", dark: "#14532D", accent: "#BEF264" },
   { light: "#FDBA74", mid: "#EA580C", dark: "#7C2D12", accent: "#FBBF24" },
   { light: "#FECACA", mid: "#D42800", dark: "#5C1200", accent: "#FF6A05" },
+  { light: "#C4B5FD", mid: "#7C3AED", dark: "#4C1D95", accent: "#A78BFA" },
+  { light: "#93C5FD", mid: "#2563EB", dark: "#1E3A8A", accent: "#60A5FA" },
+  { light: "#67E8F9", mid: "#0891B2", dark: "#164E63", accent: "#22D3EE" },
+  { light: "#FDE68A", mid: "#CA8A04", dark: "#713F12", accent: "#FACC15" },
 ] as const;
 
 const MOTIFS: readonly AvatarMotif[] = ["ring", "crescent", "shard", "core"];
