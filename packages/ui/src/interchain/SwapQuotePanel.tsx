@@ -174,7 +174,7 @@ export function SwapQuotePanel({
           </label>
           <Input
             id={customId}
-            type="number"
+            type="text"
             inputMode="decimal"
             min={0}
             max={100}
@@ -240,7 +240,7 @@ export function SwapQuotePanel({
           className="flex flex-col gap-2.5 rounded-[14px] border border-[var(--z-line)] p-3"
           aria-busy={loading || undefined}
         >
-          {loading ? <span className="sr-only">Pricing swap</span> : null}
+          {loading ? <span className="sr-only">Finding route and price</span> : null}
           {loading ? (
             (simple ? [0, 1] : [0, 1, 2, 3]).map((i) => (
               <div key={i} className="flex items-center justify-between gap-3">

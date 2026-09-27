@@ -161,3 +161,70 @@ export function activityAmountClass(
 }
 
 export const ACTIVITY_KINDS = Object.keys(TABLE) as ActivityKind[];
+
+/**
+ * Glyph for a Cosmos message the coarse activity kind does not already draw.
+ *
+ * Send, receive, swap, stake, claim, and vote keep the kind icon. Everything
+ * else, including a type this wallet has never described, gets a mark so the
+ * row is not an empty circle.
+ */
+export interface MessageGlyph {
+  icon: string;
+  tone: ActivityTone;
+  label: string;
+}
+
+const UNSUPPORTED_MESSAGE: MessageGlyph = {
+  icon: "✳",
+  tone: "muted",
+  label: "Message",
+};
+
+/** These already have a kind glyph. A second icon would replace it. */
+const KIND_GLYPH = new Set([
+  "MsgSend",
+  "MsgMultiSend",
+  "MsgTransfer",
+  "MsgDelegate",
+  "MsgUndelegate",
+  "MsgBeginRedelegate",
+  "MsgWithdrawDelegatorReward",
+  "MsgVote",
+  "MsgVoteWeighted",
+]);
+
+function glyph(icon: string, tone: ActivityTone, label: string): MessageGlyph {
+  return { icon, tone, label };
+}
+
+/**
+ * Icon for one message type.
+ *
+ * `typeName` may be a short name (`MsgUpdateClient`) or a protobuf URL.
+ * `null` means the activity kind's own icon is the one to draw.
+ */
+export function messageActivityGlyph(typeName: string | undefined): MessageGlyph | null {
+  const name = (typeName ?? "").split(".").pop()?.replace(/^\/+/, "") ?? "";
+  if (!name) return null;
+  if (KIND_GLYPH.has(name)) return null;
+  if (/Swap|JoinPool|ExitPool|JoinSwap|ExitSwap/.test(name)) return null;
+
+  if (/Client/.test(name)) return glyph("↻", "ibc", "Client");
+  if (/Timeout/.test(name)) return glyph("⏱", "ibc", "Timeout");
+  if (/Acknowledgement/.test(name)) return glyph("↩", "ibc", "Ack");
+  if (/Connection|Channel|Packet/.test(name)) return glyph("⇄", "ibc", "IBC");
+  if (/Contract|StoreCode|Migrate|Wasm/.test(name)) return glyph("λ", "swap", "Contract");
+  if (/Grant|Revoke|Allowance|Authz/.test(name) || name === "MsgExec") {
+    return glyph("⚑", "muted", "Auth");
+  }
+  if (/Proposal|Deposit/.test(name)) return glyph("✓", "vote", "Gov");
+  if (/Validator|Unjail|Unbonding|Redelegate/.test(name)) return glyph("◆", "stake", "Stake");
+  if (/Reward|Commission|CommunityPool|WithdrawAddress/.test(name)) {
+    return glyph("✦", "claim", "Claim");
+  }
+  if (/Lock|Unlock|Superfluid/.test(name)) return glyph("◆", "stake", "Lock");
+  if (/Mint|Burn|Denom/.test(name)) return glyph("✳", "muted", "Token");
+  if (name.startsWith("Msg")) return UNSUPPORTED_MESSAGE;
+  return null;
+}

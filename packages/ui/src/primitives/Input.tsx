@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { InputHTMLAttributes } from "react";
 import { forwardRef, useId, useState } from "react";
 import { cn } from "../lib/cn";
+import { typedNumber } from "../lib/typed-number";
 
 const inputVariants = cva(
   cn(
@@ -38,10 +39,12 @@ export interface InputProps
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   function Input(
-    { className, label, hint, trailing, state, id, ...rest },
+    { className, label, hint, trailing, state, id, onChange, inputMode, type, ...rest },
     ref,
   ) {
     const generatedId = useId();
+    const digitKind =
+      inputMode === "numeric" ? "integer" : inputMode === "decimal" || type === "number" ? "decimal" : null;
     // An explicit htmlFor keeps `trailing` (reveal toggles, unit suffixes) and
     // the hint out of the field's accessible name.
     const inputId = id ?? rest.name ?? generatedId;
@@ -59,9 +62,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            type={type}
+            inputMode={inputMode}
             className={cn(inputVariants({ state }), trailing && "pr-16", className)}
             aria-invalid={state === "error" || undefined}
             {...rest}
+            onChange={(event) => {
+              if (digitKind) {
+                const next = typedNumber(event.currentTarget.value, digitKind);
+                if (next !== event.currentTarget.value) event.currentTarget.value = next;
+              }
+              onChange?.(event);
+            }}
           />
           {trailing ? (
             <span className="absolute inset-y-0 right-1.5 flex items-center font-mono text-[length:var(--z-type-micro)] tracking-wider text-fg-muted">

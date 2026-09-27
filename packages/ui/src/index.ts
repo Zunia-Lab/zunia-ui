@@ -131,11 +131,13 @@ export {
   activityAmountClass,
   activityPresentation,
   inferActivityKind,
+  messageActivityGlyph,
 } from "./wallet/activity";
 export type {
   ActivityKind,
   ActivityPresentation,
   ActivityTone,
+  MessageGlyph,
 } from "./wallet/activity";
 export {
   MnemonicGrid,
