@@ -57,13 +57,16 @@ abstract final class ZuniaHaptics {
   /// A firm tap: hold-to-confirm passing its threshold.
   static Future<void> medium() => HapticFeedback.mediumImpact();
 
-  static Future<void> success() => _notify('success', HapticFeedback.mediumImpact);
+  static Future<void> success() =>
+      _notify('success', HapticFeedback.mediumImpact);
 
-  static Future<void> warning() => _notify('warning', HapticFeedback.lightImpact);
+  static Future<void> warning() =>
+      _notify('warning', HapticFeedback.lightImpact);
 
   static Future<void> error() => _notify('error', HapticFeedback.heavyImpact);
 
-  static Future<void> _notify(String kind, Future<void> Function() fallback) async {
+  static Future<void> _notify(
+      String kind, Future<void> Function() fallback) async {
     if (!_nativeMissing) {
       try {
         await _channel.invokeMethod<void>(kind);
@@ -171,8 +174,7 @@ Future<T?> showZuniaAlert<T>(
   Widget? content,
   required List<ZuniaAlertAction<T>> actions,
 }) {
-  final body = content ??
-      (message == null ? null : Text(message));
+  final body = content ?? (message == null ? null : Text(message));
   if (ZuniaPlatform.isCupertino(context)) {
     return showCupertinoDialog<T>(
       context: context,
@@ -475,11 +477,13 @@ class ZuniaListTile extends StatelessWidget {
                 color: destructive ? s.dangerFill : s.glass2,
                 borderRadius: BorderRadius.circular(7),
               ),
-              child: Icon(leading, size: 17, color: destructive ? s.danger : s.fg),
+              child:
+                  Icon(leading, size: 17, color: destructive ? s.danger : s.fg),
             )
           : SizedBox(
               width: 24,
-              child: Icon(leading, size: 22, color: destructive ? s.danger : s.fgMuted),
+              child: Icon(leading,
+                  size: 22, color: destructive ? s.danger : s.fgMuted),
             );
     }
 
@@ -497,14 +501,17 @@ class ZuniaListTile extends StatelessWidget {
       if (navigates && cupertino)
         Padding(
           padding: const EdgeInsets.only(left: 6),
-          child: Icon(CupertinoIcons.chevron_forward, size: 16, color: s.fgFaint),
+          child:
+              Icon(CupertinoIcons.chevron_forward, size: 16, color: s.fgFaint),
         ),
     ];
 
     final row = Padding(
       padding: cupertino
-          ? EdgeInsets.fromLTRB(16, subtitle == null ? 11 : 9, 14, subtitle == null ? 11 : 9)
-          : EdgeInsets.fromLTRB(20, subtitle == null ? 14 : 12, 20, subtitle == null ? 14 : 12),
+          ? EdgeInsets.fromLTRB(
+              16, subtitle == null ? 11 : 9, 14, subtitle == null ? 11 : 9)
+          : EdgeInsets.fromLTRB(
+              20, subtitle == null ? 14 : 12, 20, subtitle == null ? 14 : 12),
       child: Row(
         children: [
           if (lead != null) ...[lead, SizedBox(width: cupertino ? 12 : 20)],
@@ -526,7 +533,8 @@ class ZuniaListTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle!,
-                    style: zuniaSans(fontSize: 13, height: 1.3, color: s.fgMuted),
+                    style:
+                        zuniaSans(fontSize: 13, height: 1.3, color: s.fgMuted),
                   ),
                 ],
               ],
@@ -536,7 +544,8 @@ class ZuniaListTile extends StatelessWidget {
             const SizedBox(width: 10),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 180),
-              child: Row(mainAxisSize: MainAxisSize.min, children: trailingParts),
+              child:
+                  Row(mainAxisSize: MainAxisSize.min, children: trailingParts),
             ),
           ],
         ],
@@ -707,7 +716,8 @@ class ZuniaNavigationBar extends StatelessWidget {
             for (final item in items)
               NavigationDestination(
                 icon: _badged(item.icon, item.badge, s),
-                selectedIcon: _badged(item.activeIcon ?? item.icon, item.badge, s),
+                selectedIcon:
+                    _badged(item.activeIcon ?? item.icon, item.badge, s),
                 label: item.label,
               ),
           ],
@@ -743,7 +753,10 @@ class _CupertinoTab extends StatelessWidget {
     final s = ZuniaSemanticsExt.of(context);
     final color = active ? s.accent : s.fgDim;
     final icon = active
-        ? (item.cupertinoActiveIcon ?? item.cupertinoIcon ?? item.activeIcon ?? item.icon)
+        ? (item.cupertinoActiveIcon ??
+            item.cupertinoIcon ??
+            item.activeIcon ??
+            item.icon)
         : (item.cupertinoIcon ?? item.icon);
     Widget glyph = Icon(icon, size: 25, color: color);
     final badge = item.badge;
@@ -819,28 +832,35 @@ class ZuniaLargeTitleScaffold extends StatelessWidget {
     final bottom = MediaQuery.of(context).padding.bottom;
 
     if (cupertino) {
+      // CupertinoPageScaffold sets no Material ancestor and no text style, so
+      // Material rows (ink, ListTile) would assert and plain Text would fall
+      // back to Flutter's debug style. A transparent Material provides both.
       return CupertinoPageScaffold(
         backgroundColor: s.screenMid,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle: Text(title),
-              backgroundColor: s.screenMid.withValues(alpha: 0.82),
-              border: Border(bottom: BorderSide(color: s.line, width: 0.5)),
-              automaticallyImplyLeading: canPop,
-              previousPageTitle: canPop ? 'Back' : null,
-              trailing: actions.isEmpty
-                  ? null
-                  : Row(mainAxisSize: MainAxisSize.min, children: actions),
+        child: Material(
+          type: MaterialType.transparency,
+          textStyle: zuniaSans(fontSize: 15, color: s.fg),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            if (onRefresh != null)
-              CupertinoSliverRefreshControl(onRefresh: onRefresh),
-            ...slivers,
-            SliverPadding(padding: EdgeInsets.only(bottom: bottom + 24)),
-          ],
+            slivers: [
+              CupertinoSliverNavigationBar(
+                largeTitle: Text(title),
+                backgroundColor: s.screenMid.withValues(alpha: 0.82),
+                border: Border(bottom: BorderSide(color: s.line, width: 0.5)),
+                automaticallyImplyLeading: canPop,
+                previousPageTitle: canPop ? 'Back' : null,
+                trailing: actions.isEmpty
+                    ? null
+                    : Row(mainAxisSize: MainAxisSize.min, children: actions),
+              ),
+              if (onRefresh != null)
+                CupertinoSliverRefreshControl(onRefresh: onRefresh),
+              ...slivers,
+              SliverPadding(padding: EdgeInsets.only(bottom: bottom + 24)),
+            ],
+          ),
         ),
       );
     }
@@ -854,7 +874,8 @@ class ZuniaLargeTitleScaffold extends StatelessWidget {
           automaticallyImplyLeading: canPop,
           title: Text(
             title,
-            style: zuniaSans(fontWeight: FontWeight.w500, letterSpacing: -0.5, color: s.fg),
+            style: zuniaSans(
+                fontWeight: FontWeight.w500, letterSpacing: -0.5, color: s.fg),
           ),
           actions: [...actions, const SizedBox(width: 8)],
         ),

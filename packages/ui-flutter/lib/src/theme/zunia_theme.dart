@@ -149,22 +149,31 @@ abstract final class ZuniaTheme {
         primaryContrastingColor: s.accentFg,
         barBackgroundColor: s.screenMid.withValues(alpha: 0.82),
         scaffoldBackgroundColor: s.screenMid,
+        // Complete styles (inherit: false), like Cupertino's own: the nav bar
+        // flies titles and back labels between pages by interpolating these,
+        // and a style that inherits cannot be interpolated with one that
+        // does not.
         textTheme: CupertinoTextThemeData(
           primaryColor: s.accent,
-          textStyle: zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.fg),
-          navTitleTextStyle: zuniaSans(
+          textStyle: _complete(zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.fg)),
+          navTitleTextStyle: _complete(zuniaSans(
             fontSize: 17,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.4,
             color: s.fg,
-          ),
-          navLargeTitleTextStyle: zuniaSans(
+          )),
+          navLargeTitleTextStyle: _complete(zuniaSans(
             fontSize: 32,
             fontWeight: FontWeight.w700,
             letterSpacing: -1.0,
             color: s.fg,
+          )),
+          navActionTextStyle: _complete(
+            zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
           ),
-          actionTextStyle: zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
+          actionTextStyle: _complete(
+            zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
+          ),
         ),
       ),
       textTheme: base.textTheme.apply(
@@ -384,3 +393,17 @@ abstract final class ZuniaTheme {
     );
   }
 }
+
+/// [style] as a complete style that inherits nothing.
+TextStyle _complete(TextStyle style) => TextStyle(
+      inherit: false,
+      fontFamily: style.fontFamily,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight ?? FontWeight.w400,
+      fontStyle: FontStyle.normal,
+      letterSpacing: style.letterSpacing,
+      height: style.height,
+      color: style.color,
+      decoration: TextDecoration.none,
+      textBaseline: TextBaseline.alphabetic,
+    );
