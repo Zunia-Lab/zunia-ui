@@ -53,7 +53,7 @@ TextEditingValue _apply(TextEditingValue next, String text) {
 
 List<TextInputFormatter> digitFormattersFor(TextInputType? type) {
   if (type == null) return const [];
-  if (type.decimal) return const [DecimalDigitFormatter()];
+  if (type.decimal ?? false) return const [DecimalDigitFormatter()];
   if (type == TextInputType.number) return const [IntegerDigitFormatter()];
   return const [];
 }

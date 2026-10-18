@@ -3,6 +3,7 @@ library;
 export 'src/theme/zunia_theme.dart';
 export 'src/theme/zunia_semantics_ext.dart';
 export 'src/theme/focus_ring.dart';
+export 'src/platform/platform.dart';
 export 'src/primitives/avatar.dart';
 export 'src/primitives/button.dart';
 export 'src/primitives/icon_button.dart';

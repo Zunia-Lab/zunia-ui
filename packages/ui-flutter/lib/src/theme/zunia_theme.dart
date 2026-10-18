@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
 import 'zunia_semantics_ext.dart';
+import '../platform/platform.dart';
 
 const String kZuniaSans = 'SpaceGrotesk';
 const String kZuniaMono = 'JetBrainsMono';
@@ -132,7 +135,38 @@ abstract final class ZuniaTheme {
       extensions: [ZuniaSemanticsExt(s)],
     );
 
+    // iOS controls do not ripple: a press darkens the row and lets go. Android
+    // keeps Material's ink.
+    final cupertino =
+        ZuniaPlatform.styleFor(defaultTargetPlatform) == ZuniaPlatformStyle.cupertino;
+
     return base.copyWith(
+      pageTransitionsTheme: zuniaPageTransitions,
+      splashFactory: cupertino ? NoSplash.splashFactory : null,
+      cupertinoOverrideTheme: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: s.accent,
+        primaryContrastingColor: s.accentFg,
+        barBackgroundColor: s.screenMid.withValues(alpha: 0.82),
+        scaffoldBackgroundColor: s.screenMid,
+        textTheme: CupertinoTextThemeData(
+          primaryColor: s.accent,
+          textStyle: zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.fg),
+          navTitleTextStyle: zuniaSans(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.4,
+            color: s.fg,
+          ),
+          navLargeTitleTextStyle: zuniaSans(
+            fontSize: 32,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -1.0,
+            color: s.fg,
+          ),
+          actionTextStyle: zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
+        ),
+      ),
       textTheme: base.textTheme.apply(
         fontFamily: fontFamily,
         bodyColor: s.fg,

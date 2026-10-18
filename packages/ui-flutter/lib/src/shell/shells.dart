@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
+import '../platform/platform.dart';
 
 /// Full-bleed phone chrome: screen gradient fill, optional back/title, footer.
 class ZuniaScreenScaffold extends StatelessWidget {
@@ -41,7 +43,9 @@ class ZuniaScreenScaffold extends StatelessWidget {
     final content = Column(
       children: [
         if (title != null || onBack != null || trailing != null)
-          Padding(
+          ZuniaPlatform.isCupertino(context)
+              ? _CupertinoHeader(title: title, onBack: onBack, trailing: trailing)
+              : Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
             child: Row(
               children: [
@@ -116,6 +120,62 @@ class ZuniaScreenScaffold extends StatelessWidget {
   }
 }
 
+/// iOS navigation bar: a chevron back, the title centred, actions at the end.
+class _CupertinoHeader extends StatelessWidget {
+  const _CupertinoHeader({this.title, this.onBack, this.trailing});
+
+  final String? title;
+  final VoidCallback? onBack;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = ZuniaSemanticsExt.of(context);
+    return SizedBox(
+      height: 48,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 72),
+              child: Text(
+                title!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: zuniaSans(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.4,
+                  color: s.fg,
+                ),
+              ),
+            ),
+          if (onBack != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CupertinoButton(
+                padding: const EdgeInsets.only(left: 8, right: 12),
+                minimumSize: const Size(44, 44),
+                onPressed: onBack,
+                child: Icon(CupertinoIcons.chevron_back, size: 26, color: s.fg),
+              ),
+            ),
+          if (trailing != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: trailing!,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class _BackControl extends StatelessWidget {
   const _BackControl({required this.onPressed});
 
@@ -124,18 +184,11 @@ class _BackControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
-    return Material(
-      color: s.glass,
-      borderRadius: BorderRadius.circular(ZuniaRadii.md),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(ZuniaRadii.md),
-        child: SizedBox(
-          width: 34,
-          height: 34,
-          child: Icon(Icons.arrow_back, size: 18, color: s.fgMuted),
-        ),
-      ),
+    return IconButton(
+      onPressed: onPressed,
+      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+      visualDensity: VisualDensity.compact,
+      icon: Icon(Icons.arrow_back, size: 22, color: s.fg),
     );
   }
 }
