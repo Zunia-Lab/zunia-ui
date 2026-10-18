@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
 
+import '../shell/shells.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
 
@@ -835,31 +836,33 @@ class ZuniaLargeTitleScaffold extends StatelessWidget {
       // CupertinoPageScaffold sets no Material ancestor and no text style, so
       // Material rows (ink, ListTile) would assert and plain Text would fall
       // back to Flutter's debug style. A transparent Material provides both.
-      return CupertinoPageScaffold(
-        backgroundColor: s.screenMid,
-        child: Material(
-          type: MaterialType.transparency,
-          textStyle: zuniaSans(fontSize: 15, color: s.fg),
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
-            ),
-            slivers: [
-              CupertinoSliverNavigationBar(
-                largeTitle: Text(title),
-                backgroundColor: s.screenMid.withValues(alpha: 0.82),
-                border: Border(bottom: BorderSide(color: s.line, width: 0.5)),
-                automaticallyImplyLeading: canPop,
-                previousPageTitle: canPop ? 'Back' : null,
-                trailing: actions.isEmpty
-                    ? null
-                    : Row(mainAxisSize: MainAxisSize.min, children: actions),
+      return ZuniaBackdrop(
+        child: CupertinoPageScaffold(
+          backgroundColor: const Color(0x00000000),
+          child: Material(
+            type: MaterialType.transparency,
+            textStyle: zuniaSans(fontSize: 15, color: s.fg),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
               ),
-              if (onRefresh != null)
-                CupertinoSliverRefreshControl(onRefresh: onRefresh),
-              ...slivers,
-              SliverPadding(padding: EdgeInsets.only(bottom: bottom + 24)),
-            ],
+              slivers: [
+                CupertinoSliverNavigationBar(
+                  largeTitle: Text(title),
+                  backgroundColor: s.screenMid.withValues(alpha: 0.82),
+                  border: Border(bottom: BorderSide(color: s.line, width: 0.5)),
+                  automaticallyImplyLeading: canPop,
+                  previousPageTitle: canPop ? 'Back' : null,
+                  trailing: actions.isEmpty
+                      ? null
+                      : Row(mainAxisSize: MainAxisSize.min, children: actions),
+                ),
+                if (onRefresh != null)
+                  CupertinoSliverRefreshControl(onRefresh: onRefresh),
+                ...slivers,
+                SliverPadding(padding: EdgeInsets.only(bottom: bottom + 24)),
+              ],
+            ),
           ),
         ),
       );
@@ -868,7 +871,11 @@ class ZuniaLargeTitleScaffold extends StatelessWidget {
     final scroll = CustomScrollView(
       slivers: [
         SliverAppBar.large(
-          backgroundColor: s.screenMid,
+          // Nearly opaque, in the backdrop's top colour, so content scrolls
+          // under the bar without showing through its title.
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xF0221A16)
+              : const Color(0xF0FCFAF8),
           surfaceTintColor: Colors.transparent,
           scrolledUnderElevation: 0,
           automaticallyImplyLeading: canPop,
@@ -883,16 +890,18 @@ class ZuniaLargeTitleScaffold extends StatelessWidget {
         SliverPadding(padding: EdgeInsets.only(bottom: bottom + 24)),
       ],
     );
-    return Scaffold(
-      backgroundColor: s.screenMid,
-      body: onRefresh == null
-          ? scroll
-          : RefreshIndicator(
-              onRefresh: onRefresh!,
-              color: s.accent,
-              backgroundColor: s.surfaceRaised,
-              child: scroll,
-            ),
+    return ZuniaBackdrop(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: onRefresh == null
+            ? scroll
+            : RefreshIndicator(
+                onRefresh: onRefresh!,
+                color: s.accent,
+                backgroundColor: s.surfaceRaised,
+                child: scroll,
+              ),
+      ),
     );
   }
 }

@@ -18,6 +18,7 @@ export 'src/wallet/activity.dart';
 export 'src/wallet/flows.dart';
 export 'src/wallet/onboarding.dart';
 export 'src/wallet/validator_avatar.dart';
+export 'src/wallet/verified_badge.dart';
 export 'src/wallet/validator_logo.dart';
 export 'src/wallet/wallet_avatar.dart';
 export 'src/charts/charts.dart';

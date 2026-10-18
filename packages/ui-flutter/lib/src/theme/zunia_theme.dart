@@ -241,9 +241,12 @@ abstract final class ZuniaTheme {
           side: BorderSide(color: s.line),
         ),
       ),
+      // Focus is neutral: a red outline reads as "wrong" before anything is.
+      // Red belongs to errors only (errorBorder / focusedErrorBorder).
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: s.stateHover,
+        fillColor: s.glass,
+        isDense: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: s.line),
@@ -254,14 +257,25 @@ abstract final class ZuniaTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: s.accent, width: 1.5),
+          borderSide: BorderSide(color: s.fgMuted, width: 1.2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: s.danger),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
-        hintStyle: zuniaMono(fontSize: 12.5, color: s.fgDim),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: s.danger, width: 1.5),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: s.line.withValues(alpha: 0.5)),
+        ),
+        // 44 high with one line of 14px text: the same height as a large
+        // button and a list row, so a form reads as one rhythm.
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        hintStyle: zuniaSans(fontSize: 14, color: s.fgDim),
+        errorStyle: zuniaSans(fontSize: 12, color: s.danger),
       ),
       listTileTheme: ListTileThemeData(
         selectedTileColor: s.stateSelected,

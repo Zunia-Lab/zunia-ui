@@ -113,10 +113,7 @@ class ZuniaScreenScaffold extends StatelessWidget {
 
     if (!gradient) return content;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(gradient: s.screenGradient),
-      child: content,
-    );
+    return ZuniaBackdrop(child: content);
   }
 }
 
@@ -414,3 +411,118 @@ class ZuniaDrawerRow extends StatelessWidget {
     );
   }
 }
+
+/// The screen ground: a warm gradient with a soft brand glow and a faint dot
+/// grid, instead of a flat near-black. Everything sits on it; it never moves.
+///
+/// Drawn once per page: inside another backdrop (a root tab in the shell) it
+/// only shows its child. It reaches up under the status bar, so a page whose
+/// content starts below a SafeArea keeps one continuous ground.
+class ZuniaBackdrop extends StatelessWidget {
+  const ZuniaBackdrop({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (context.getInheritedWidgetOfExactType<_BackdropScope>() != null) {
+      return child;
+    }
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final view = View.of(context);
+    final above = view.padding.top / view.devicePixelRatio;
+    return _BackdropScope(
+      child: Stack(
+        fit: StackFit.passthrough,
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            top: -above,
+            bottom: 0,
+            child: RepaintBoundary(
+              child: CustomPaint(painter: _BackdropPainter(dark: dark)),
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _BackdropScope extends InheritedWidget {
+  const _BackdropScope({required super.child});
+
+  @override
+  bool updateShouldNotify(_BackdropScope oldWidget) => false;
+}
+
+class _BackdropPainter extends CustomPainter {
+  _BackdropPainter({required this.dark});
+
+  final bool dark;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: dark
+              ? const [Color(0xFF221A16), Color(0xFF15110F), Color(0xFF0E0C0B)]
+              : const [Color(0xFFFCFAF8), Color(0xFFF6F3F0), Color(0xFFF1EEEA)],
+          stops: const [0, 0.45, 1],
+        ).createShader(rect),
+    );
+
+    void glow(Offset center, double radius, Color color) {
+      canvas.drawCircle(
+        center,
+        radius,
+        Paint()
+          ..shader = RadialGradient(
+            colors: [color, color.withValues(alpha: 0)],
+          ).createShader(Rect.fromCircle(center: center, radius: radius)),
+      );
+    }
+
+    final w = size.width;
+    glow(
+      Offset(w * 0.92, size.height * 0.02),
+      w * 0.95,
+      const Color(0xFFFF1B0C).withValues(alpha: dark ? 0.17 : 0.07),
+    );
+    glow(
+      Offset(w * 0.05, size.height * 0.98),
+      w * 0.8,
+      const Color(0xFFFF6A10).withValues(alpha: dark ? 0.07 : 0.04),
+    );
+
+    // A dot every 22 px, fading out towards the bottom.
+    const step = 22.0;
+    final dot = Paint();
+    for (var y = step / 2; y < size.height; y += step) {
+      final fade = 1 - (y / size.height);
+      dot.color = (dark ? const Color(0xFFFFFFFF) : const Color(0xFF000000))
+          .withValues(alpha: (dark ? 0.035 : 0.03) * fade);
+      for (var x = step / 2; x < w; x += step) {
+        canvas.drawCircle(Offset(x, y), 0.8, dot);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BackdropPainter old) => old.dark != dark;
+}
+
+/// The colour at the top of [ZuniaBackdrop], for a Scaffold whose status-bar
+/// strip should continue the backdrop drawn below its SafeArea.
+Color zuniaGroundTop(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF221A16)
+        : const Color(0xFFFCFAF8);
