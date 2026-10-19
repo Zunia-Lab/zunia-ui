@@ -140,9 +140,12 @@ class _ZuniaValidatorAvatarState extends State<ZuniaValidatorAvatar> {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
-    final initials = widget.moniker.isEmpty
-        ? '?'
-        : widget.moniker.characters.take(2).toString().toUpperCase();
+    final initials = Text(
+      widget.moniker.isEmpty
+          ? '?'
+          : widget.moniker.characters.take(2).toString().toUpperCase(),
+      style: zuniaMono(fontSize: widget.size * 0.32, color: s.fgMuted),
+    );
     return ClipOval(
       child: Container(
         width: widget.size,
@@ -156,11 +159,11 @@ class _ZuniaValidatorAvatarState extends State<ZuniaValidatorAvatar> {
                 height: widget.size,
                 fit: BoxFit.cover,
                 gaplessPlayback: true,
+                // The probe loaded it, but the image cache may have let it go
+                // since, and the host may refuse it on the next fetch.
+                errorBuilder: (_, __, ___) => initials,
               )
-            : Text(
-                initials,
-                style: zuniaMono(fontSize: widget.size * 0.32, color: s.fgMuted),
-              ),
+            : initials,
       ),
     );
   }
