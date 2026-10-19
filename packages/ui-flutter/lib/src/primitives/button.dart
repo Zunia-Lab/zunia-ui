@@ -115,12 +115,20 @@ class ZuniaButton extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                Text(
-                  label,
-                  style: zuniaSans(
-                    fontSize: size == ZuniaButtonSize.sm ? 11.5 : 13,
-                    fontWeight: FontWeight.w600,
-                    color: fg,
+                // Flexible so a long label in a narrow button, or at a large
+                // text size, ends in an ellipsis instead of overflowing; the
+                // full label stays available to screen readers.
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: zuniaSans(
+                      fontSize: size == ZuniaButtonSize.sm ? 11.5 : 13,
+                      fontWeight: FontWeight.w600,
+                      color: fg,
+                    ),
                   ),
                 ),
               ],

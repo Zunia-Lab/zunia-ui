@@ -53,7 +53,7 @@ TextEditingValue _apply(TextEditingValue next, String text) {
 
 List<TextInputFormatter> digitFormattersFor(TextInputType? type) {
   if (type == null) return const [];
-  if (type.decimal) return const [DecimalDigitFormatter()];
+  if (type.decimal ?? false) return const [DecimalDigitFormatter()];
   if (type == TextInputType.number) return const [IntegerDigitFormatter()];
   return const [];
 }
@@ -98,12 +98,12 @@ class ZuniaInput extends StatelessWidget {
           Text(
             label!,
             style: zuniaMono(
-              fontSize: 9.5,
-              letterSpacing: 1.3,
+              fontSize: 10.5,
+              letterSpacing: 1.1,
               color: s.fgMuted,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
         ],
         TextField(
           controller: controller,
@@ -120,7 +120,7 @@ class ZuniaInput extends StatelessWidget {
                   : digitFormattersFor(keyboardType)),
           autocorrect: false,
           enableSuggestions: !obscureText,
-          style: zuniaMono(fontSize: 12.5, color: s.fg),
+          style: zuniaMono(fontSize: 14, color: s.fg),
           decoration: InputDecoration(
             hintText: hint,
             errorText: errorText,

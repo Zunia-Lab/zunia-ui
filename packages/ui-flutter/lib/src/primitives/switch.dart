@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
+import '../platform/platform.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
 
+/// On/off control in the platform's own shape. See [ZuniaAdaptiveSwitch].
 class ZuniaSwitch extends StatelessWidget {
   const ZuniaSwitch({super.key, required this.value, required this.onChanged});
 
@@ -10,21 +13,11 @@ class ZuniaSwitch extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    final s = ZuniaSemanticsExt.of(context);
-    return Switch(
-      value: value,
-      onChanged: onChanged,
-      activeThumbColor: s.accentFg,
-      activeTrackColor: s.accent,
-      inactiveThumbColor: s.fgDim,
-      inactiveTrackColor: s.stateHover,
-      trackOutlineColor: WidgetStatePropertyAll(s.lineStrong),
-    );
-  }
+  Widget build(BuildContext context) =>
+      ZuniaAdaptiveSwitch(value: value, onChanged: onChanged);
 }
 
-class ZuniaSegmented<T> extends StatelessWidget {
+class ZuniaSegmented<T extends Object> extends StatelessWidget {
   const ZuniaSegmented({
     super.key,
     required this.options,
@@ -39,6 +32,40 @@ class ZuniaSegmented<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
+    if (ZuniaPlatform.isCupertino(context)) {
+      // UISegmentedControl: a sliding thumb, sentence-case labels.
+      return SizedBox(
+        width: double.infinity,
+        child: CupertinoSlidingSegmentedControl<T>(
+          groupValue: value,
+          backgroundColor: s.glass2,
+          thumbColor: s.surfaceRaised,
+          padding: const EdgeInsets.all(3),
+          onValueChanged: (next) {
+            if (next == null) return;
+            ZuniaHaptics.selection();
+            onChanged(next);
+          },
+          children: {
+            for (final e in options.entries)
+              e.key: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 6),
+                child: Text(
+                  e.value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: zuniaSans(
+                    fontSize: 13.5,
+                    fontWeight: e.key == value ? FontWeight.w600 : FontWeight.w500,
+                    letterSpacing: -0.2,
+                    color: s.fg,
+                  ),
+                ),
+              ),
+          },
+        ),
+      );
+    }
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
@@ -53,7 +80,10 @@ class ZuniaSegmented<T> extends StatelessWidget {
               color: selected ? s.accent : Colors.transparent,
               borderRadius: BorderRadius.circular(ZuniaRadii.full),
               child: InkWell(
-                onTap: () => onChanged(e.key),
+                onTap: () {
+                  if (e.key != value) ZuniaHaptics.selection();
+                  onChanged(e.key);
+                },
                 borderRadius: BorderRadius.circular(ZuniaRadii.full),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),

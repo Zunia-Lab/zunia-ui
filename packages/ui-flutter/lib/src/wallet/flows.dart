@@ -351,6 +351,19 @@ class ZuniaApproveSession extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = ZuniaSemanticsExt.of(context);
+    final initial = ColoredBox(
+      color: s.stateHover,
+      child: Center(
+        child: Text(
+          dappName.isNotEmpty ? dappName.substring(0, 1).toUpperCase() : '?',
+          style: zuniaSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: s.fg,
+          ),
+        ),
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -363,22 +376,9 @@ class ZuniaApproveSession extends StatelessWidget {
                 width: 44,
                 height: 44,
                 child: iconUrl != null && iconUrl!.isNotEmpty
-                    ? Image.network(iconUrl!, fit: BoxFit.cover)
-                    : ColoredBox(
-                        color: s.stateHover,
-                        child: Center(
-                          child: Text(
-                            dappName.isNotEmpty
-                                ? dappName.substring(0, 1).toUpperCase()
-                                : '?',
-                            style: zuniaSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: s.fg,
-                            ),
-                          ),
-                        ),
-                      ),
+                    // A site's icon URL is whatever the site says: it may not load.
+                    ? Image.network(iconUrl!, fit: BoxFit.cover, errorBuilder: (_, __, ___) => initial)
+                    : initial,
               ),
             ),
             const SizedBox(width: 12),
