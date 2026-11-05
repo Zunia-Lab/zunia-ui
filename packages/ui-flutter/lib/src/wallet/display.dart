@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
 import '../theme/zunia_semantics_ext.dart';
+import 'verified_badge.dart';
 import '../theme/zunia_theme.dart';
 import 'activity.dart';
 
@@ -365,10 +366,7 @@ class ZuniaNetworkChip extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (verified) ...[
-                  // Hardcoded amber #F2913B before; the count beside it
-                  // already used s.info, so the two drifted apart in light
-                  // theme where info is #A44A08.
-                  Icon(Icons.verified, size: 13, color: s.info),
+                  const ZuniaVerifiedBadge(size: 15),
                   const SizedBox(width: 7),
                 ],
                 Text(
@@ -537,22 +535,9 @@ class ZuniaTokenLogo extends StatelessWidget {
             ),
             if (verified)
               Positioned(
-                right: -1,
-                bottom: -1,
-                child: Container(
-                  width: size * 0.44,
-                  height: size * 0.44,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: s.info,
-                    // The ring is the surface colour so the badge reads as a
-                    // cut-out rather than a smudge over the logo art.
-                    border: Border.all(color: s.surface, width: 1.5),
-                  ),
-                  // bg on info: 5.18:1 light / 8.38:1 dark.
-                  child: Icon(Icons.check, size: size * 0.26, color: s.bg),
-                ),
+                right: -size * 0.08,
+                bottom: -size * 0.08,
+                child: ZuniaVerifiedBadge(size: size * 0.5, ring: s.surface),
               ),
           ],
         ),

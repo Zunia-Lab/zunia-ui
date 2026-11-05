@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
+import '../platform/platform.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
 
@@ -220,6 +221,7 @@ Future<T?> showZuniaSheet<T>(
   String? title,
   bool isScrollControlled = true,
 }) {
+  ZuniaHaptics.light();
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: isScrollControlled,

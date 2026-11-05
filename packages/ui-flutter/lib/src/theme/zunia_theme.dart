@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:zunia_tokens/zunia_tokens.dart';
 import 'zunia_semantics_ext.dart';
+import '../platform/platform.dart';
 
 const String kZuniaSans = 'SpaceGrotesk';
 const String kZuniaMono = 'JetBrainsMono';
@@ -132,7 +135,47 @@ abstract final class ZuniaTheme {
       extensions: [ZuniaSemanticsExt(s)],
     );
 
+    // iOS controls do not ripple: a press darkens the row and lets go. Android
+    // keeps Material's ink.
+    final cupertino =
+        ZuniaPlatform.styleFor(defaultTargetPlatform) == ZuniaPlatformStyle.cupertino;
+
     return base.copyWith(
+      pageTransitionsTheme: zuniaPageTransitions,
+      splashFactory: cupertino ? NoSplash.splashFactory : null,
+      cupertinoOverrideTheme: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: s.accent,
+        primaryContrastingColor: s.accentFg,
+        barBackgroundColor: s.screenMid.withValues(alpha: 0.82),
+        scaffoldBackgroundColor: s.screenMid,
+        // Complete styles (inherit: false), like Cupertino's own: the nav bar
+        // flies titles and back labels between pages by interpolating these,
+        // and a style that inherits cannot be interpolated with one that
+        // does not.
+        textTheme: CupertinoTextThemeData(
+          primaryColor: s.accent,
+          textStyle: _complete(zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.fg)),
+          navTitleTextStyle: _complete(zuniaSans(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.4,
+            color: s.fg,
+          )),
+          navLargeTitleTextStyle: _complete(zuniaSans(
+            fontSize: 32,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -1.0,
+            color: s.fg,
+          )),
+          navActionTextStyle: _complete(
+            zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
+          ),
+          actionTextStyle: _complete(
+            zuniaSans(fontSize: 17, letterSpacing: -0.4, color: s.accent),
+          ),
+        ),
+      ),
       textTheme: base.textTheme.apply(
         fontFamily: fontFamily,
         bodyColor: s.fg,
@@ -198,9 +241,12 @@ abstract final class ZuniaTheme {
           side: BorderSide(color: s.line),
         ),
       ),
+      // Focus is neutral: a red outline reads as "wrong" before anything is.
+      // Red belongs to errors only (errorBorder / focusedErrorBorder).
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: s.stateHover,
+        fillColor: s.glass,
+        isDense: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: s.line),
@@ -211,14 +257,25 @@ abstract final class ZuniaTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: s.accent, width: 1.5),
+          borderSide: BorderSide(color: s.fgMuted, width: 1.2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: s.danger),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
-        hintStyle: zuniaMono(fontSize: 12.5, color: s.fgDim),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: s.danger, width: 1.5),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: s.line.withValues(alpha: 0.5)),
+        ),
+        // 44 high with one line of 14px text: the same height as a large
+        // button and a list row, so a form reads as one rhythm.
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        hintStyle: zuniaSans(fontSize: 14, color: s.fgDim),
+        errorStyle: zuniaSans(fontSize: 12, color: s.danger),
       ),
       listTileTheme: ListTileThemeData(
         selectedTileColor: s.stateSelected,
@@ -350,3 +407,17 @@ abstract final class ZuniaTheme {
     );
   }
 }
+
+/// [style] as a complete style that inherits nothing.
+TextStyle _complete(TextStyle style) => TextStyle(
+      inherit: false,
+      fontFamily: style.fontFamily,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight ?? FontWeight.w400,
+      fontStyle: FontStyle.normal,
+      letterSpacing: style.letterSpacing,
+      height: style.height,
+      color: style.color,
+      decoration: TextDecoration.none,
+      textBaseline: TextBaseline.alphabetic,
+    );

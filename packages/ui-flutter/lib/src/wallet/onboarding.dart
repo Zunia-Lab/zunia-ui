@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../primitives/switch.dart';
+import '../platform/platform.dart';
 import '../theme/zunia_semantics_ext.dart';
 import '../theme/zunia_theme.dart';
 import 'display.dart';
@@ -272,21 +274,27 @@ class ZuniaSearchField extends StatelessWidget {
       enableSuggestions: false,
       textInputAction: textInputAction,
       keyboardType: TextInputType.url,
-      style: zuniaMono(fontSize: 13, color: s.fg),
+      // The same field as every other search: neutral fill, a grey edge on
+      // focus (red is for errors), words in sans, 44 high.
+      style: zuniaSans(fontSize: 15, color: s.fg),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: zuniaMono(fontSize: 13, color: s.fgDim),
-        prefixIcon: Icon(Icons.search, size: 18, color: s.fgDim),
+        hintStyle: zuniaSans(fontSize: 15, color: s.fgDim),
+        prefixIcon: Icon(
+          ZuniaPlatform.isCupertino(context) ? CupertinoIcons.search : Icons.search,
+          size: 20,
+          color: s.fgDim,
+        ),
         filled: true,
-        fillColor: s.stateHover,
-        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+        fillColor: s.glass,
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: s.line),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: s.accent),
+          borderSide: BorderSide(color: s.fgMuted, width: 1.2),
         ),
       ),
     );
